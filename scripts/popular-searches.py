@@ -16,7 +16,7 @@ def set_all_search_keywords_to_db():
 	pass
 
 
-def get_popular_searches(new_keyword):
+def compute_popular_searches(new_keyword):
 	current_top_n = get_popular_search_keywords_from_db()
 	current_all_searches = get_all_search_keywords_from_db()
 	new_keyword_count = 0
