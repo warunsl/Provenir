@@ -11,10 +11,10 @@
         <title>Provenir</title>
 
         <!-- Bootstrap core CSS -->
-        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
 
         <!-- Documentation extras -->
-        <link href="css/docs.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='docs.css') }}" rel="stylesheet">
         <!-- <link href="css/pygments-manni.css" rel="stylesheet"> -->
         <!--[if lt IE 9]><script src="./docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
@@ -31,11 +31,12 @@
 
     <body class="bs-docs-home">
         <!-- Include the navbar here -->
-        <!-- {% include 'navbar.html' %} -->
+        {% include 'navbar.html' %}
 
         <!-- Page content of course! -->
         <main class="bs-masthead">
             <div class="container">
+                <div class="col-lg-2"></div>
                 <div class="col-lg-8">
                     <div class="input-group input-group-lg">
                         <input type="text" class="form-control">
@@ -56,8 +57,8 @@
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="js/bootstrap.js"></script>
-        <script src="js/holder.js"></script>
-        <script src="js/application.js"></script>
+        <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+        <script src="{{ url_for('static', filename='holder.js') }}"></script>
+        <script src="{{ url_for('static', filename='application.js') }}"></script>
     </body>
 </html>
