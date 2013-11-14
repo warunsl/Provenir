@@ -6,7 +6,50 @@ fields = ["PI Picture No.","Artist Name","Title","Institution","Accession No.","
 artists = set()
 
 
+def remove_wrong_terms():
+    global artists
+    new_artists = set()
+    wrong_terms = ['attribute', 'copy', 'workshop', 'style', 'studio', 'after', 'follower', 'possibly', 'imitator', 'forgery', 'school', 'manner', 'formerly', 'ascribed', 'assistant']
+    idx = []
+
+    for artist in artists:
+        print artist
+        for term in wrong_terms:
+            if term in artist.lower():
+                idx.append(artist.lower().index(term))
+        if len(idx) != 0:
+            print artist[:min(idx)]
+            new_artists.add(artist[:min(idx)])
+        else:
+            print artist
+            new_artists.add(artist)
+        idx = []
+    artists = new_artists
+
+    # new_artists = set()
+    # for artist in artists:
+    #     if 'copy' in artist.lower():
+    #         idx = artist.lower().index('copy')
+    #         new_artists.add(artist[:idx])
+    #     else:
+    #         new_artists.add(artist)
+    # artists = new_artists
+
+
+def remove_non_artists():
+    global artists
+    new_artists = set()
+
+    for artist in artists:
+        if '[' not in artist or ']' not in artist:
+            new_artists.add(artist)
+
+    artists = new_artists
+
+
 def create_artists_file():
+    global artists
+
     with open('artistsgetty.txt', 'w') as opfile:
         for artist in artists:
             opfile.write(artist)
@@ -55,6 +98,8 @@ def main():
         if is_csv(fl):
             get_artists(fl)
 
+    remove_non_artists()
+    remove_wrong_terms()
     create_artists_file()
 
 
