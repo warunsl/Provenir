@@ -1,0 +1,62 @@
+from pprint import pprint
+import csv
+import os
+
+fields = ["PI Picture No.","Artist Name","Title","Institution","Accession No.","Format/Support","Comments","Add'l Subjects","Sale Date","Sale Notes","Date","Owner/Location","Notes","Copyright"]
+artists = set()
+
+
+def create_artists_file():
+    with open('artistsgetty.txt', 'w') as opfile:
+        for artist in artists:
+            opfile.write(artist)
+            opfile.write('\n')
+    opfile.close()
+
+
+def is_csv(filename):
+    with open(filename, 'rb') as csvfile:
+        try:
+            csv_reader = csv.reader(csvfile)
+            for row in csv_reader:
+                first_line = row
+                try:
+                    elements = first_line[0].strip().split(',')
+                except Exception, IndexError:
+                    raise csv.Error
+                for element in elements:
+                    if element not in fields:
+                        raise csv.Error
+                break
+            csvfile.seek(0)
+        except csv.Error:
+            print "not a csv file, skipping", filename
+            return False
+    csvfile.close()
+    return True
+
+
+def get_artists(filename):
+    global fields
+    global artists
+    print "processing file ", filename
+    with open(filename, 'rb') as csvfile:
+        csv_reader = csv.reader(csvfile)
+        for row in csv_reader:
+            artists.add(row[1])
+    print "Total number of unique artists", len(artists)
+    csvfile.close()
+
+
+def main():
+    artists_list = []
+    filenames = [f for f in os.listdir('.') if os.path.isfile(f)]
+    for fl in filenames:
+        if is_csv(fl):
+            get_artists(fl)
+
+    create_artists_file()
+
+
+if __name__ == '__main__':
+    main()
