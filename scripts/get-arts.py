@@ -1,5 +1,6 @@
 import csv
 import os
+import json
 
 fields = ["PI Picture No.", "Artist Name", "Title", "Institution",
           "Accession No.", "Format/Support", "Comments", "Add'l Subjects",
@@ -8,14 +9,51 @@ fields = ["PI Picture No.", "Artist Name", "Title", "Institution",
 arts = set()
 
 
-def create_arts_file():
+def create_mongo_arts_json():
+    '''
+        Create JSON for the art
+
+        art = {
+            "name" : "",
+            "image_url" : "",
+            "artist" : "",
+            "short_description" : "",
+            "long_description" : "",
+            "current_owner" : "",
+            "era" : "",
+            "provenance" : [
+                1,
+                2,
+                3
+            ],
+            "museums" : [
+                "",
+                ""
+            ]
+        }
+    '''
     global arts
 
-    with open('artsgetty.txt', 'w') as opfile:
-        for art in arts:
-            opfile.write(art)
-            opfile.write('\n')
-    opfile.close()
+    arts_json = []
+    for art in arts:
+        art_dict = {}
+        try:
+            art_dict["name"] = unicode(art.strip())
+            art_dict["image_url"] = ""
+            art_dict["artist"] = ""
+            art_dict["short_description"] = ""
+            art_dict["long_description"] = ""
+            art_dict["current_owner"] = ""
+            art_dict["era"] = ""
+            art_dict["provenance"] = []
+            art_dict["museums"] = []
+            arts_json.append(art_dict)
+        except Exception, e:
+            print "Encountered unicode error on ", art
+
+    with open('mongo_arts.json', 'w') as outfile:
+        outfile.write(json.dumps(unicode(arts_json)))
+    outfile.close()
 
 
 def is_csv(filename):
@@ -47,7 +85,7 @@ def get_arts(filename):
     with open(filename, 'rb') as csvfile:
         csv_reader = csv.reader(csvfile)
         for row in csv_reader:
-            arts.add(row[2])
+            arts.add(row[2].decode('latin-1'))
     print "Total number of unique arts", len(arts)
     csvfile.close()
 
@@ -62,14 +100,12 @@ def main():
     new_arts = set()
     for art in arts:
         if '(?)' in art:
-            print art
             idx = art.index('(?)')
             art = art[:idx] + art[idx+3:]
-            print art
         new_arts.add(art)
     arts = new_arts
 
-    create_arts_file()
+    create_mongo_arts_json()
 
 
 if __name__ == '__main__':
