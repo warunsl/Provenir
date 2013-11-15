@@ -3,15 +3,18 @@ import json
 
 
 def main():
+    '''
+        TO-DO : Make sure both the input files are encoded correctly
+    '''
     artists = set()
     with open('nga-artists', 'rb') as ngafile:
         for line in ngafile:
-            artists.add(line)
+            artists.add(line.decode('latin-1'))
     ngafile.close()
 
     with open('getty-artists', 'rb') as gettyfile:
         for line in gettyfile:
-            artists.add(line)
+            artists.add(line.decode('latin-1'))
     gettyfile.close()
 
     '''
@@ -39,7 +42,7 @@ def main():
     artist_json = []
     for artist in artists:
         artist_dict = {}
-        artist_dict["name"] = artist.strip()
+        artist_dict["name"] = unicode(artist.strip())
         artist_dict["country"] = ""
         artist_dict["short_description"] = ""
         artist_dict["long_description"] = ""
