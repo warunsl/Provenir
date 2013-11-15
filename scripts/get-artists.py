@@ -2,14 +2,19 @@ from pprint import pprint
 import csv
 import os
 
-fields = ["PI Picture No.","Artist Name","Title","Institution","Accession No.","Format/Support","Comments","Add'l Subjects","Sale Date","Sale Notes","Date","Owner/Location","Notes","Copyright"]
+fields = ["PI Picture No.", "Artist Name", "Title", "Institution",
+          "Accession No.", "Format/Support", "Comments", "Add'l Subjects",
+          "Sale Date", "Sale Notes", "Date", "Owner/Location", "Notes",
+          "Copyright"]
 artists = set()
 
 
 def remove_wrong_terms():
     global artists
     new_artists = set()
-    wrong_terms = ['attribute', 'copy', 'workshop', 'style', 'studio', 'after', 'follower', 'possibly', 'imitator', 'forgery', 'school', 'manner', 'formerly', 'ascribed', 'assistant']
+    wrong_terms = ['attribute', 'copy', 'workshop', 'style', 'studio',
+                   'after', 'follower', 'possibly', 'imitator', 'forgery',
+                   'school', 'manner', 'formerly', 'ascribed', 'assistant']
     idx = []
 
     for artist in artists:
@@ -92,7 +97,6 @@ def get_artists(filename):
 
 
 def main():
-    artists_list = []
     filenames = [f for f in os.listdir('.') if os.path.isfile(f)]
     for fl in filenames:
         if is_csv(fl):
