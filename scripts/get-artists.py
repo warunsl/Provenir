@@ -17,17 +17,17 @@ def remove_wrong_terms():
                    'school', 'manner', 'formerly', 'ascribed', 'assistant']
     idx = []
 
-    for artist in artists:
-        print artist
+    for artist, accid, pno in artists:
+        # print artist
         for term in wrong_terms:
             if term in artist.lower():
                 idx.append(artist.lower().index(term))
         if len(idx) != 0:
-            print artist[:min(idx)]
-            new_artists.add(artist[:min(idx)])
+            # print artist[:min(idx)]
+            new_artists.add((artist[:min(idx)], accid, pno))
         else:
-            print artist
-            new_artists.add(artist)
+            # print artist
+            new_artists.add((artist, accid, pno))
         idx = []
     artists = new_artists
 
@@ -45,21 +45,37 @@ def remove_non_artists():
     global artists
     new_artists = set()
 
-    for artist in artists:
+    for artist, accid, pno in artists:
         if '[' not in artist or ']' not in artist:
-            new_artists.add(artist)
+            new_artists.add((artist, accid, pno))
 
     artists = new_artists
 
 
 def create_artists_file():
+    '''
+        The file created by this is used for
+        Google Refine.
+    '''
     global artists
-
-    with open('artistsgetty.txt', 'w') as opfile:
-        for artist in artists:
-            opfile.write(artist)
-            opfile.write('\n')
+    pno_map = {}
+    with open('artistsgetty.csv', 'w') as opfile:
+        csvwriter = csv.writer(opfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        for artist, accid, pno in artists:
+            try:
+                count = pno_map[pno][0]
+                pno_map[pno] = (count + 1, [artist, accid])
+            except KeyError:
+                pno_map[pno] = (1, [artist, accid])
+            csvwriter.writerow([artist, accid, pno])
+            # opfile.write(';')
+            # opfile.write(accid)
+            # opfile.write('\n')
     opfile.close()
+    print "Printing pno map"
+    for k,v in pno_map.items():
+        if v[0] > 1:
+            print k, pno_map[k]
 
 
 def is_csv(filename):
@@ -91,8 +107,8 @@ def get_artists(filename):
     with open(filename, 'rb') as csvfile:
         csv_reader = csv.reader(csvfile)
         for row in csv_reader:
-            artists.add(row[1])
-    print "Total number of unique artists", len(artists)
+            artists.add((row[1], row[4], row[0]))
+    # print "Total number of unique artists", len(artists)
     csvfile.close()
 
 
