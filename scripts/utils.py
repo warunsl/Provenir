@@ -36,6 +36,28 @@ def set_all_search_keywords_to_db():
     pass
 
 
+def is_csv(filename):
+    with open(filename, 'rb') as csvfile:
+        try:
+            csv_reader = csv.reader(csvfile)
+            for row in csv_reader:
+                first_line = row
+                try:
+                    elements = first_line[0].strip().split(',')
+                except Exception, IndexError:
+                    raise csv.Error
+                for element in elements:
+                    if element not in fields:
+                        raise csv.Error
+                break
+            csvfile.seek(0)
+        except csv.Error:
+            print "not a csv file, skipping", filename
+            return False
+    csvfile.close()
+    return True
+
+
 def compute_popular_searches(new_keyword):
     current_top_n = get_popular_search_keywords_from_db()
     current_all_searches = get_all_search_keywords_from_db()
