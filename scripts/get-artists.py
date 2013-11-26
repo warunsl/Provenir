@@ -78,28 +78,6 @@ def create_artists_file():
             print k, pno_map[k]
 
 
-def is_csv(filename):
-    with open(filename, 'rb') as csvfile:
-        try:
-            csv_reader = csv.reader(csvfile)
-            for row in csv_reader:
-                first_line = row
-                try:
-                    elements = first_line[0].strip().split(',')
-                except Exception, IndexError:
-                    raise csv.Error
-                for element in elements:
-                    if element not in fields:
-                        raise csv.Error
-                break
-            csvfile.seek(0)
-        except csv.Error:
-            print "not a csv file, skipping", filename
-            return False
-    csvfile.close()
-    return True
-
-
 def get_artists(filename):
     global fields
     global artists
