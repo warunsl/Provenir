@@ -1,11 +1,12 @@
 from pprint import pprint
+from utils import is_csv
 import csv
 import os
 
 fields = ["PI Picture No.", "Artist Name", "Title", "Institution",
-          "Accession No.", "Format/Support", "Comments", "Add'l Subjects",
-          "Sale Date", "Sale Notes", "Date", "Owner/Location", "Notes",
-          "Copyright"]
+      "Accession No.", "Format/Support", "Comments", "Add'l Subjects",
+      "Sale Date", "Sale Notes", "Date", "Owner/Location", "Notes",
+      "Copyright"]
 artists = set()
 
 
@@ -31,15 +32,6 @@ def remove_wrong_terms():
         idx = []
     artists = new_artists
 
-    # new_artists = set()
-    # for artist in artists:
-    #     if 'copy' in artist.lower():
-    #         idx = artist.lower().index('copy')
-    #         new_artists.add(artist[:idx])
-    #     else:
-    #         new_artists.add(artist)
-    # artists = new_artists
-
 
 def remove_non_artists():
     global artists
@@ -55,12 +47,27 @@ def remove_non_artists():
 def create_artists_file():
     '''
         The file created by this is used for
-        Google Refine.
+        Open Refine to clean the artists.
+
+        Open Refine output : getty-artists.csv
+
+        Open Refine uses te above file to reconcile
+        artists with dbpedia.
+
+        Open refine output : getty-artists-dbpedia
+
+        get-artists-nga.py uses the artists.json to
+        create a file with only the artist names
+
+        Open refine uses this file and reconciles it
+        with dbpedia to produce nga-artists-dbpedia
     '''
     global artists
     pno_map = {}
     with open('artistsgetty.csv', 'w') as opfile:
-        csvwriter = csv.writer(opfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        csvwriter = csv.writer(opfile, delimiter=',', quotechar='"', 
+                               quoting=csv.QUOTE_ALL)
+        csvwriter.writerow(["ARTIST", "ACCID", "PNO"])
         for artist, accid, pno in artists:
             try:
                 count = pno_map[pno][0]
@@ -68,14 +75,6 @@ def create_artists_file():
             except KeyError:
                 pno_map[pno] = (1, [artist, accid])
             csvwriter.writerow([artist, accid, pno])
-            # opfile.write(';')
-            # opfile.write(accid)
-            # opfile.write('\n')
-    opfile.close()
-    print "Printing pno map"
-    for k,v in pno_map.items():
-        if v[0] > 1:
-            print k, pno_map[k]
 
 
 def get_artists(filename):
@@ -93,7 +92,7 @@ def get_artists(filename):
 def main():
     filenames = [f for f in os.listdir('.') if os.path.isfile(f)]
     for fl in filenames:
-        if is_csv(fl):
+        if is_csv(fl, fields):
             get_artists(fl)
 
     remove_non_artists()
