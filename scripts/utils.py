@@ -1,23 +1,5 @@
+import csv
 import pymongo
-from calais import Calais
-
-API_KEY = u'xy6hh7fgx7qqywt7mzgkqarn'
-calais = Calais(API_KEY, submitter='artists-info')
-
-
-def get_entities_from_calais(artist):
-    calais_result = calais.analyze(artist)
-    return calais_result.entities
-
-
-def get_topics_from_calais(artist):
-    calais_result = calais.analyze(artist)
-    return calais_result.topics
-
-
-def get_relations_from_calais(artist):
-    calais_result = calais.analyze(artist)
-    return calais_result.relations
 
 
 def get_popular_search_keywords_from_db():
@@ -36,7 +18,7 @@ def set_all_search_keywords_to_db():
     pass
 
 
-def is_csv(filename):
+def is_csv(filename, fields):
     with open(filename, 'rb') as csvfile:
         try:
             csv_reader = csv.reader(csvfile)
