@@ -62,8 +62,8 @@ def build_nga_source_map(artists):
                                          BeautifulSoup.HTML_ENTITIES))
             fullname = name.strip().split(',')
             if len(fullname) == 2:
-                nga_source[fullname[1].strip() + ' ' + fullname[0].strip()] =
-                artist
+                nga_source[fullname[1].strip() + ' ' +
+                           fullname[0].strip()] = artist
             else:
                 nga_source[name.strip()] = artist
         except Exception, e:
@@ -169,10 +169,45 @@ def process_nga_artists():
                                     long_descr, movement])
                 processed += 1
                 print processed
+    opfile.close()
 
 
 def process_getty_artists():
-    pass
+    getty_reconciled_artists = get_files()["getty-artists-dbpedia"]
+    with open(getty_reconciled_artists, 'rb') as gettyfile:
+        csv_reader = csv.reader(gettyfile)
+        with open('getty-artists-dbpedia-info.csv', 'a') as opfile:
+            csvwriter = csv.writer(opfile, delimiter=',', quotechar='"',
+                                   quoting=csv.QUOTE_ALL)
+            csvwriter.writerow(["Name", "Url", "Source", "Birth Date",
+                                "Death Date", "Short description",
+                                "Long description", "Movement"])
+            processed = 0
+            for row in csv_reader:
+                url = row[2]
+                name = row[0]
+                source = "getty"
+                if "dbpedia" in url:
+                    result = get_info_from_dbpedia(url)
+                    birth_date = result["birth_date"]
+                    birth_date = convert(birth_date)
+                    death_date = result["death_date"]
+                    death_date = convert(death_date)
+                    short_descr = result["short_descr"]
+                    short_descr = convert(short_descr)
+                    long_descr = result["long_descr"]
+                    long_descr = convert(long_descr)
+                    movement = result["movement"]
+                    movement = convert(movement)
+                else:
+                    birth_date, death_date, short_descr, long_descr,
+                    movement = "", "", "", "", ""
+                csvwriter.writerow([name, url, source, birth_date,
+                                   death_date, short_descr,
+                                   long_descr, movement])
+                processed += 1
+                print processed
+    gettyfile.close()
 
 
 def read_partially_written_file():
@@ -185,7 +220,7 @@ def read_partially_written_file():
 
 def main():
     preprocess_nga()
-    process_nga_artists()
+    # process_nga_artists()
     process_getty_artists()
 
 
