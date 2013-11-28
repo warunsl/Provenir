@@ -1,4 +1,5 @@
 import csv
+import sys
 import pymongo
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -78,15 +79,20 @@ def query_sparql(artist, prop):
     elif prop == "death date":
         sparql_type = "dbpprop:deathDate"
 
-    sparql.setQuery(
-        """
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        SELECT ?label
-        WHERE { <""" + artist + """>""" + sparql_type + """?label }
-        """
-    )
-    sparql.setReturnFormat(JSON)
-    results = sparql.query().convert()
+    try:
+        sparql.setQuery(
+            """
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            SELECT ?label
+            WHERE { <""" + artist + """>""" + sparql_type + """?label }
+            """
+        )
+        sparql.setReturnFormat(JSON)
+        results = sparql.query().convert()
 
-    for result in results["results"]["bindings"]:
-        return result["label"]["value"]
+        for result in results["results"]["bindings"]:
+            return result["label"]["value"]
+    except Exception:
+        print "Sparql query error"
+        sys.exit(1)
+        
