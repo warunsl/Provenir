@@ -1,6 +1,8 @@
 import csv
 import pymongo
+from SPARQLWrapper import SPARQLWrapper, JSON
 
+sparql = SPARQLWrapper("http://dbpedia.org/sparql")
 
 def get_popular_search_keywords_from_db():
     pass
@@ -62,3 +64,29 @@ def compute_popular_searches(new_keyword):
 
     set_popular_search_keywords_to_db()
     set_all_search_keywords_to_db()
+
+
+def query_sparql(artist, prop):
+    if prop == "short description":
+        sparql_type = "dc:description"
+    elif prop == "long description":
+        sparql_type = "dbpprop:caption"
+    elif prop == "movement":
+        sparql_type = "dbpprop:movement"
+    elif prop == "birth date":
+        sparql_type = "dbpprop:birthDate"
+    elif prop == "death date":
+        sparql_type = "dbpprop:deathDate"
+
+    sparql.setQuery(
+        """
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT ?label
+        WHERE { <""" + artist + """>""" + sparql_type + """?label }
+        """
+    )
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+
+    for result in results["results"]["bindings"]:
+        return result["label"]["value"]
