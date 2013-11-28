@@ -20,6 +20,10 @@ getty_reconciled_artists = os.path.abspath(os.path.join(refine_dir,
                                            'getty-artists-dbpedia.csv'))
 nga_reconciled_artists = os.path.abspath(os.path.join(refine_dir,
                                          'nga-artists-dbpedia.csv'))
+getty_info_artists = os.path.abspath(os.path.join(refine_dir,
+                                           'getty-artists-dbpedia-info.csv'))
+nga_info_artists = os.path.abspath(os.path.join(refine_dir,
+                                         'nga-artists-dbpedia-info.csv'))
 nga_artists_json = os.path.abspath(os.path.join(nga_data_dir,
                                    'artists.json'))
 
@@ -41,6 +45,8 @@ def get_files():
     file_map["nga-artists"] = nga_artists_json
     file_map["nga-artists-dbpedia"] = nga_reconciled_artists
     file_map["getty-artists-dbpedia"] = getty_reconciled_artists
+    file_map["nga-artists-dbpedia-info"] = nga_info_artists
+    file_map["getty-artists-dbpedia-info"] = getty_info_artists
     return file_map
 
 
