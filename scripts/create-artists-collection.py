@@ -3,6 +3,7 @@ import sys
 import csv
 import json
 import pymongo
+from SPARQLWrapper import SPARQLWrapper, JSON
 
 '''
     Create JSON for the artist
@@ -11,9 +12,11 @@ import pymongo
         "name" : "",
         "url" : "",
         "country" : "",
+        "birth-date":"",
+        "death-date":"",
         "short_description" : "",
         "long_description" : "",
-        "era" : "",
+        "movement" : "",
         "influencer_of" : [
             1,
             2,
@@ -24,6 +27,7 @@ import pymongo
             2,
             3
         ],
+        "source":""
     }
 
 '''
@@ -41,23 +45,51 @@ nga_reconciled_artists = os.path.abspath(os.path.join(refine_dir,
                                          'nga-artists-dbpedia.csv'))
 
 
+def get_info_from_dbpedia(artist):
+    pass
+
+
+def get_info_from_ngadata(artist):
+    pass
+
+
 def get_artist_details():
     '''
+        name = (name, url, source)
+
         For the entries that were re-conciled successfully with dbpedia
         we fetch the artist details from dbpedia by doing a sparql query
 
         For the rest:
         1. If it was a nga artist, we get the details from nga json
-        2. Else, blanks
+        2. Else, store empty values
     '''
     global artists
-    pass
+    if len(artists) == 0:
+        print "Artist information empty"
+        return False
+    for artist, info in artists.items():
+        if "dbpedia" in info[1]:
+            get_info_from_dbpedia(artist)
+        elif "nga" in info[2]:
+            get_info_from_ngadata(artist)
+        else:
+            pass
+
+
+def get_resource_url(row):
+    urls = row[1:]
+    for item in urls:
+        if "dbpedia" in item:
+            return item
+        else:
+            return row[3]
 
 
 def process_files():
     '''
         Creates artist dictionary with name as the Key
-        name = (name, url)
+        name = (name, url, source)
     '''
 
     global artists
@@ -75,13 +107,16 @@ def process_files():
                 artists[row[0]]
                 url = artists[row[0]][1]
                 if "Person" not in url:
-                    artists[row[0]] = (row[0], url)
-                    # print "Specific url found: ", url
+                    artists[row[0]] = (row[0], url, "nga")
                 else:
-                    # print "Duplicate artist found. Skipping: ", row[0]
-                    pass
+                    url = get_resource_url(row)
+                    if "dbpedia" in url:
+                        artists[row[0]] = (row[0], url, "nga")  
             except KeyError:
-                artists[row[0]] = (row[0], row[3])
+                # Open Refine rule bug consequence : 
+                # Applicable to only nga artists
+                # Process the row to see if there is a dbpedia link
+                artists[row[0]] = (row[0], get_resource_url(row), "nga")
     ngafile.close()
 
     with open(getty_reconciled_artists, 'rb') as gettyfile:
@@ -93,13 +128,12 @@ def process_files():
                 artists[row[0]]
                 url = artists[row[0]][1]
                 if "Person" not in url:
-                    artists[row[0]] = (row[0], url)
-                    # print "Specific url found: ", url
+                    artists[row[0]] = (row[0], url, "getty")
                 else:
-                    # print "Duplicate artist found. Skipping: ", row[0]
-                    pass
+                    if "dbpedia" in row[2]:
+                        artists[row[0]] = (row[0], row[2], "getty")
             except KeyError:
-                artists[row[0]] = (row[0], row[2])
+                artists[row[0]] = (row[0], row[2], "getty")
     gettyfile.close()
 
     # prepare the json to be inserted into the mongo collection
@@ -107,6 +141,8 @@ def process_files():
     for k, v in artists.items():
         artist_dict = {}
         artist_dict["name"] = artists[k][0]
+        artist_dict["url"] = v[1]
+        artist_dict["source"] = v[2]
         artist_dict["country"] = ""
         artist_dict["short_description"] = ""
         artist_dict["long_description"] = ""
@@ -123,7 +159,8 @@ def process_files():
 def main():
     if not process_files():
         sys.exit(1)
-    get_artist_details()
+    if not get_artist_details():
+        sys.exit(1)
 
 
 if __name__ == '__main__':
