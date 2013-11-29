@@ -1,39 +1,57 @@
 import os
 import csv
+from utils import is_csv
 from pprint import pprint
 
-accids = {}
+pno_map = {}
+fields = ["PI Picture No.", "Artist Name", "Title", "Institution",
+          "Accession No.", "Format/Support", "Comments", "Add'l Subjects",
+          "Sale Date", "Sale Notes", "Date", "Owner/Location", "Notes",
+          "Copyright"]
 
 
-def get_accids():
+def create_input_for_open_refine():
+    global pno_map
+    with open('provorinput', 'w') as opfile:
+        csvwriter = csv.writer(opfile, delimiter=',', quotechar='"',
+                       quoting=csv.QUOTE_ALL)
+        csvwriter.writerow(["pno","col1","col2","col3"])
+        for k, v in pno_map.items():
+            for prov in v[2]:
+                csvwriter.writerow([k, v[0], v[1], prov])
+        
+
+
+def construct_pno_map(fl):
     '''
-        1. Get the accid and artist name from artistaccid.csv
-        2. For each ccid, get the corresponding records from 
-           getty csvs
-        3. Combine all the provenance records for a particular
-           art work(accid)
-        4. Push that in final art json
-        5. Push the entire getty strings also into the final art
-           json
+        1. Extract pno, (art, provenance, entry) from all the csvs
     '''
-    global accids
-    with open('artistaccid.csv', 'rb') as cafile:
-        csv_reader = csv.reader(cafile)
-        cc = 0
+    global pno_map
+    with open(fl, 'rb') as csvfile:
+        csv_reader = csv.reader(csvfile)
         for row in csv_reader:
+            provenance = ""
+            for item in row[7:]:
+                provenance = provenance + " " + item
             try:
-                accids[row[3]].append(row)
-                print accids[row[3]]
+                provenance_array = pno_map[row[0]][2]
+                provenance_array.add(provenance)
+                pno_map[row[0]] = (row[1], row[2], provenance_array)
             except KeyError:
-                accids[row[3]] = [row]
-    cafile.close()
-    print cc
+                if provenance is not "":
+                    pno_map[row[0]] = (row[1], row[2], set([provenance]))
+                else:
+                    pno_map[row[0]] = (row[1], row[2], set([]))
+    csvfile.close()
 
 
 def main():
-    get_accids()
+    filenames = [f for f in os.listdir('.') if os.path.isfile(f)]
+    for fl in filenames:
+        if is_csv(fl, fields):
+            construct_pno_map(fl)
 
-
+    create_input_for_open_refine()
 
 
 if __name__ == '__main__':
