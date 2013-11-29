@@ -1,10 +1,13 @@
 import os
+import ast
 import csv
 import sys
 import json
 import pymongo
+import collections
 from utils import is_csv
 from pymongo import MongoClient
+from BeautifulSoup import BeautifulSoup
 
 fields = ["PI Picture No.", "Artist Name", "Title", "Institution",
           "Accession No.", "Format/Support", "Comments", "Add'l Subjects",
@@ -17,14 +20,14 @@ collection = db.artdata
 
 
 # Converts the encoded keys in the dictionary to string
-def convert(input):
+def convert(input, encoding):
     if isinstance(input, dict):
         return {convert(key): convert(value) for
                 key, value in input.iteritems()}
     elif isinstance(input, list):
         return [convert(element) for element in input]
     elif isinstance(input, unicode):
-        return input.encode('latin-1')
+        return input.encode(encoding)
     else:
         return input
 
@@ -76,37 +79,16 @@ def create_mongo_arts_json():
     outfile.close()
 
 
-# def is_csv(filename):
-#     global fields
-#     with open(filename, 'rb') as csvfile:
-#         try:
-#             csv_reader = csv.reader(csvfile)
-#             for row in csv_reader:
-#                 first_line = row
-#                 try:
-#                     elements = first_line[0].strip().split(',')
-#                 except Exception, IndexError:
-#                     raise csv.Error
-#                 for element in elements:
-#                     if element not in fields:
-#                         raise csv.Error
-#                 break
-#             csvfile.seek(0)
-#         except csv.Error:
-#             print "not a csv file, skipping", filename
-#             return False
-#     csvfile.close()
-#     return True
 def create_arts_file(source):
     if source == "getty":
         with open("getty-arts", "w") as outfile:
             for art in arts:
-                outfile.write(convert(art))
+                outfile.write(convert(art, 'latin-1'))
                 outfile.write("\n")
     else:
         with open("nga-arts", "w") as outfile:
             for art in arts:
-                outfile.write(art)
+                outfile.write(convert(art, 'latin-1'))
                 outfile.write("\n")
     outfile.close()
 
@@ -122,23 +104,17 @@ def post_process_getty_arts():
     arts = new_arts
 
 
-def post_process_nga_arts():
-    pass
-
-
 def get_nga_arts():
     global arts
     arts = set()
-    with open("artdata.json", "rb") as ngafile:
-        for line in ngafile:
-            try:
-                line_object = json.loads(line)
-                print line_object["title"]
-                arts.append(line_object["title"])
-            except Exception, TypeError:
-                print "JSON format error"
-                sys.exit(1)
-    ngafile.close()
+    cursor = collection.find({}, fields={"_id": False, "title": True})
+    for item in cursor:
+        item = ast.literal_eval(json.dumps(item))
+        try:
+            art = item['title'].decode('latin-1')
+            arts.add(art)
+        except Exception, AttributeError:
+            print "Skipped ", item['title']
 
 
 def get_getty_arts(filename):
@@ -162,8 +138,7 @@ def main():
 
     # Fetching nga data is from a mongo collection
     get_nga_arts()
-    # post_process_nga_arts()
-    # create_arts_file("nga")
+    create_arts_file("nga")
 
 
 if __name__ == '__main__':
