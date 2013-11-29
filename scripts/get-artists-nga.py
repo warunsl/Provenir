@@ -24,7 +24,8 @@ def process_artists(artists_list):
 
     for artist in artists_list:
         name = artist[u'name']
-        name = unicode(BeautifulSoup(name, convertEntities=BeautifulSoup.HTML_ENTITIES))
+        name = unicode(BeautifulSoup(name, convertEntities=
+                                     BeautifulSoup.HTML_ENTITIES))
         fullname = name.strip().split(',')
         if len(fullname) == 2:
             artists_set.add(fullname[1].strip() + ' ' + fullname[0].strip())

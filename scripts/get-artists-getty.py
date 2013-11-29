@@ -4,9 +4,9 @@ import csv
 import os
 
 fields = ["PI Picture No.", "Artist Name", "Title", "Institution",
-      "Accession No.", "Format/Support", "Comments", "Add'l Subjects",
-      "Sale Date", "Sale Notes", "Date", "Owner/Location", "Notes",
-      "Copyright"]
+          "Accession No.", "Format/Support", "Comments", "Add'l Subjects",
+          "Sale Date", "Sale Notes", "Date", "Owner/Location", "Notes",
+          "Copyright"]
 artists = set()
 
 
@@ -65,7 +65,7 @@ def create_artists_file():
     global artists
     pno_map = {}
     with open('artistsgetty.csv', 'w') as opfile:
-        csvwriter = csv.writer(opfile, delimiter=',', quotechar='"', 
+        csvwriter = csv.writer(opfile, delimiter=',', quotechar='"',
                                quoting=csv.QUOTE_ALL)
         csvwriter.writerow(["ARTIST", "ACCID", "PNO"])
         for artist, accid, pno in artists:

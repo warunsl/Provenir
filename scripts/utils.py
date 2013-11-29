@@ -21,9 +21,9 @@ getty_reconciled_artists = os.path.abspath(os.path.join(refine_dir,
 nga_reconciled_artists = os.path.abspath(os.path.join(refine_dir,
                                          'nga-artists-dbpedia.csv'))
 getty_info_artists = os.path.abspath(os.path.join(refine_dir,
-                                           'getty-artists-dbpedia-info.csv'))
+                                     'getty-artists-dbpedia-info.csv'))
 nga_info_artists = os.path.abspath(os.path.join(refine_dir,
-                                         'nga-artists-dbpedia-info.csv'))
+                                   'nga-artists-dbpedia-info.csv'))
 nga_artists_json = os.path.abspath(os.path.join(nga_data_dir,
                                    'artists.json'))
 
@@ -188,4 +188,3 @@ def query_sparql(artist, prop):
     except Exception:
         print "Sparql query error!"
         sys.exit(1)
-
