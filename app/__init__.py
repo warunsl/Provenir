@@ -15,3 +15,7 @@ def about():
 @app.route('/art')
 def art():
 	return render_template('art.html')
+
+@app.route('/artist')
+def artist():
+	return render_template('artist.html')
