@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Provenir - Artist</title>
+
+    <style>
+    .body { background: #F8EFFB; }
+    </style>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+
+    <link href="{{ url_for('static', filename='docs.css') }}" rel="stylesheet">
+
+    <style type="text/css" media="screen">
+
+
+
+    .img-thumb{
+
+        border: 6px solid #FFFFFF;
+        border-radius: 3px;
+        box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+        max-height: 300px;
+        max-width: 300px;
+    }
+
+    .top-container{
+        background: none repeat scroll 0 0 #FFFFFF;
+        border-radius: 2px;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        margin-top: 20px;
+        max-width: 960px;
+        padding: 20px;
+    }
+
+    .art-box{
+        background: none repeat scroll 0 0 #FFFFFF;
+        box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+        float: left;
+        height: 220px;
+        margin-right: 30px;
+        margin-top: 20px;
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+        width: 200px;
+    }
+
+    .art-box .img-small{
+        width: 200px;
+    }
+
+    .art-box .art-title{
+        text-align: center;
+        width: 200px;
+        font-weight: bold;
+        background-color: #F0F0F0;
+    }
+
+    .art-box{
+        color: #5e5e5e;
+    }
+
+    .provenance-container > div:nth-child(odd){ background-color:#eee; }
+    .provenance-container > div:nth-child(even){ background-color:#fff; }
+
+    </style>
+
+
+</head>
+
+<body>
+    <!-- Include the navbar here -->
+    {% include 'navbar.html' %}
+    <div class="container" style="max-width:960px">
+        <div class="container top-container">
+            <div class="row">
+                <div class="col-md-4" style="text-align:center">
+                    <img class="img-thumb" src="//upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg/417px-Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg">
+                </div>
+                <div class="col-md-6">
+                    <h1>Leonardo da Vinci</h1>
+                    <ul style="font-size: 16px; list-style: none outside none;">    
+                        <li><b>Birth:</b> April 15, 1452</li>
+                        <li><b>Death:</b> May 2, 1519</li>
+                        <li><b>Description:</b> </li>
+                        <li><b>Movement:</b> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <h2>Arts:</h2>
+        <div class="art-list">
+            <a href="#" title="">
+                <div class="art-box">
+                        <div class="art-title">
+                            The Maas at Dordrecht
+                        </div>
+                        <img src="http://media.nga.gov/public/objects/5/7/6/576-primary-0-440x400.jpg" class="img-small" alt="">
+                </div>
+            </a>
+            <a href="#" title="">
+                <div class="art-box">
+                        <div class="art-title">
+                            The Maas at Dordrecht
+                        </div>
+                        <img src="//upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg/417px-Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg" class="img-small" alt="">
+                </div>
+            </a>
+
+        </div>
+        <div class="container" style="margin-bottom:30px">
+            
+        </div>
+        
+    </div>
+
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+        <script src="{{ url_for('static', filename='holder.js') }}"></script>
+        <script src="{{ url_for('static', filename='application.js') }}"></script>
+    </body>
+    </html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Provenir - Art Details</title>
+
+        <style>
+            .body { background: #F8EFFB; }
+        </style>
+
+        <!-- Bootstrap core CSS -->
+        <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+        
+        <link href="{{ url_for('static', filename='docs.css') }}" rel="stylesheet">
+
+        <style type="text/css" media="screen">
+
+            .date{
+                border-right: 1px solid #DEDEDE;
+                font-size: 30px;
+                height: 60px;
+                line-height: 60px;
+                text-align: center;
+            }
+
+            .top-container{
+                background: none repeat scroll 0 0 #FFFFFF;
+                border-radius: 2px;
+                box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+                margin-top: 20px;
+                max-width: 960px;
+                padding: 20px;
+            }
+
+            .provenance-container{
+                font-size: 16px;
+            }
+
+            .provenance-container > div:nth-child(odd){ background-color:#eee; }
+            .provenance-container > div:nth-child(even){ background-color:#fff; }
+            
+        </style>
+
+
+    </head>
+
+    <body>
+        <!-- Include the navbar here -->
+        {% include 'navbar.html' %}
+    <div class="container" style="max-width:960px">
+        
+        <div class="container top-container">
+            <div class="row">
+                <div class="col-md-4" style="text-align:center">
+                    <img class="img-thumbnail" src="http://media.nga.gov/public/objects/5/7/6/576-primary-0-440x400.jpg">
+                </div>
+                <div class="col-md-6">
+                    <h1>The Maas at Dordrecht</h1>
+                    <ul style="font-size: 16px; list-style: none outside none;">    
+                        <li><b>Artists:</b> <a href="#">Cuyp, Aelbert</a> </li>
+                        <li><b>Created:</b> c. 1650</li>
+                        <li><b>Era:</b> <a href="#">1600-1700</a></li>
+                        <li><b>Organizations:</b> <a href="#">Duveen Brothers, Inc.</a>, <a href="#">The A.W. Mellon Educational and Charitable Trust</a></b></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <h2> Provenance:</h2>
+            <div class="provenance-container container" style="max-width:960px">
+                <div class="provenance-record row">
+                    <div class="date col-md-4">1785</div>
+                    <div class="col-md-8">
+                        Johan van der Linden van Slingeland [1701-1782], Dordrecht, by 1752.[1] (his estate sale, at his residence by J. Yver and A. Delfos, Dordrecht, 22 August 1785 and days following, no. 70)
+                    </div>
+                </div>
+                <div class="provenance-record row">
+                    <div class="date col-md-4">1804 - 1814</div>
+                    <div class="col-md-8">"Rens" or "Delfos."[2] (Alexis Delahante, London), c. 1804 to 1814</div>
+                </div>
+                <div class="provenance-record row">
+                    <div class="date col-md-4">1815</div>
+                    <div class="col-md-8">sold to Abraham Hume, Bart. [1749-1838], Wormley, Hertfordshire, by 1815</div>
+                </div>
+                <div class="provenance-record row">
+                    <div class="date col-md-4">1851</div>
+                    <div class="col-md-8">[3] by inheritance to his grandson, John Hume Cust, Viscount Alford, M. P. [1812-1851], Ashridge Park, Hertfordshire</div>
+                </div>
+                <div class="provenance-record row">
+                    <div class="date col-md-4">1867</div>
+                    <div class="col-md-8">by inheritance to his son, John William Spencer, 2nd earl Brownlow [1842-1867], Ashridge Park</div>
+                </div>
+            </div>
+    </div>
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+        <script src="{{ url_for('static', filename='holder.js') }}"></script>
+        <script src="{{ url_for('static', filename='application.js') }}"></script>
+    </body>
+</html>
