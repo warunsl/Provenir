@@ -40,6 +40,15 @@
                 width: 172px;
             }
 
+            .top-container{
+                background: none repeat scroll 0 0 #FFFFFF;
+                border-radius: 2px;
+                box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+                margin-top: 20px;
+                max-width: 960px;
+                padding: 20px;
+            }
+
             .provenance-container{
                 font-size: 16px;
             }
@@ -55,7 +64,9 @@
     <body>
         <!-- Include the navbar here -->
         {% include 'navbar.html' %}
-        <div class="container" style="margin-top:20px">
+    <div class="container" style="max-width:960px">
+        
+        <div class="container top-container">
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
                     <img class="img-thumbnail" src="http://media.nga.gov/public/objects/5/7/6/576-primary-0-440x400.jpg">
@@ -69,7 +80,7 @@
                         <li><b>Organizations:</b> <a href="#">Duveen Brothers, Inc.</a>, <a href="#">The A.W. Mellon Educational and Charitable Trust</a></b></li>
                     </ul>
                 </div>
-            </row>
+            </div>
         </div>
         <div class="container">
             <h2> Provenance </h2>
@@ -95,6 +106,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
