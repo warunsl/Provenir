@@ -1,3 +1,4 @@
+import re
 import sys
 import json
 import pymongo
@@ -9,7 +10,6 @@ from BeautifulSoup import BeautifulSoup
 connection = MongoClient()
 db = connection.provenir
 collection = db.artist
-
 
 nga_artists = []
 nga_result_map = {}
@@ -28,49 +28,46 @@ def convert(input):
         return input
 
 
-def output_to_file():
+def fix_mongo_collection():
     global nga_result_map
-    print len(nga_result_map.keys())
-    with open("fixed-nga", "w") as outfile:
-        for k, v in nga_result_map.items():
-            outfile.write(convert(k))
-            outfile.write(" ")
-            outfile.write(v[0])
-            outfile.write(" ")
-            outfile.write(v[1])
-            outfile.write(" ")
-            outfile.write("\n")
-    outfile.close()
-
+    count = 0
+    for k, v in nga_result_map.items():
+        name_regx = re.compile(r'{0}'.format(k), re.IGNORECASE)
+        collection_nga_artists_cursor = collection.find({"source":"nga", "name":name_regx})
+        if collection_nga_artists_cursor.count() == 1:
+            for record in collection_nga_artists_cursor:
+                update_id = record['_id']
+                collection.update({"_id":update_id}, {"$set": {"nga-data": v}})
+                count += 1
+                print count
+        elif collection_nga_artists_cursor.count() > 1:
+            print "Uh oh"
+        else:
+            print "No records found for ", k
+    print "End of fix_mongo_collection", count
+        
 
 def build_nga_source_map(artists):
-    print len(artists)
     global nga_result_map
+    count = 0
     for artist in artists:
         # Need to transform the artist name in first name
         # last name format
         try:
-            name = artist[u'name']
-            name = unicode(BeautifulSoup(name, convertEntities=
-                                         BeautifulSoup.HTML_ENTITIES))
-            print name
-            nationality = artist[u'nationality']
-            nationality = unicode(BeautifulSoup(nationality, convertEntities=
-                                                BeautifulSoup.HTML_ENTITIES))
-            imagepath = artist[u'imagepath']
-            imagepath = unicode(BeautifulSoup(imagepath, convertEntities=
-                                              BeautifulSoup.HTML_ENTITIES))
+            name = artist['name']
+            # name = unicode(BeautifulSoup(name, convertEntities=
+            #                              BeautifulSoup.HTML_ENTITIES))
             fullname = name.strip().split(',')
             if len(fullname) == 2:
                 nga_result_map[fullname[1].strip() + ' ' +
-                               fullname[0].strip()] = [nationality, imagepath]
+                               fullname[0].strip()] = artist
             else:
-                nga_result_map[name.strip()] = [nationality, imagepath]
+                nga_result_map[name.strip()] = artist
+            count += 1
         except Exception, e:
             raise e
             print "Exception"
-    print "End"
-    print len(nga_result_map.keys())
+    print "End of build_nga_source_map", count
 
 
 def process_nga_source():
@@ -94,14 +91,12 @@ def get_nga_artists_from_mongo():
         artist = unicode(BeautifulSoup(item["name"], convertEntities=
                                        BeautifulSoup.HTML_ENTITIES))
         nga_artists.append(artist)
-    print len(nga_artists)
+    print "NGA artists from mongo", len(nga_artists)
 
 
 def main():
-    get_nga_artists_from_mongo()
     process_nga_source()
-    pprint(nga_result_map)
-    output_to_file()
+    fix_mongo_collection()
 
 
 if __name__ == '__main__':
