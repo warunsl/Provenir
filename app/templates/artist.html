@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Provenir - Artist</title>
+    <title>Provenir - {{artist.name}}</title>
 
     <style>
     .body { background: #F8EFFB; }
@@ -105,26 +105,22 @@
                 </div>
             </div>
         </div>
+        <br>
         <h2>Arts:</h2>
-        <!-- <div class="art-list">
-            <a href="#" title="">
-                <div class="art-box">
-                        <div class="art-title">
-                            The Maas at Dordrecht
-                        </div>
-                        <img src="http://media.nga.gov/public/objects/5/7/6/576-primary-0-440x400.jpg" class="img-small" alt="">
-                </div>
-            </a>
-            <a href="#" title="">
-                <div class="art-box">
-                        <div class="art-title">
-                            The Maas at Dordrecht
-                        </div>
-                        <img src="//upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg/417px-Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg" class="img-small" alt="">
-                </div>
-            </a>
-
-        </div> -->
+            <div class="art-list">
+            {% if artist.art_ids %}
+                {% for art in artist.arts %}
+                <a href="#" title="">
+                    <div class="art-box">
+                            <div class="art-title">
+                                {{ art.title }}
+                            </div>
+                            <img src="{{ art.image }}" class="img-small" alt="">
+                    </div>
+                </a>
+                {% endfor %}
+            {% endif %}
+            </div>
         <div class="container" style="margin-bottom:30px">
         </div>
     </div>
