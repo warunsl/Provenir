@@ -84,21 +84,29 @@
         <div class="container top-container">
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
-                    <img class="img-thumb" src="//upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg/417px-Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg">
+                    <!-- <img class="img-thumb" src="//upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg/417px-Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg"> -->
                 </div>
                 <div class="col-md-6">
-                    <h1>Leonardo da Vinci</h1>
+                    <h1>{{ artist.name }}</h1>
                     <ul style="font-size: 16px; list-style: none outside none;">    
-                        <li><b>Birth:</b> April 15, 1452</li>
-                        <li><b>Death:</b> May 2, 1519</li>
-                        <li><b>Description:</b> </li>
-                        <li><b>Movement:</b> </li>
+                        {% if artist.birth_date %}
+                            <li><b>Birth: </b> {{ artist.birth_date }}</li>
+                        {% endif %}
+                        {% if artist.death_date %}
+                            <li><b>Death: </b>{{ artist.death_date }}</li>
+                        {% endif %}
+                        {% if artist.movement %}
+                            <li><b>Movement: </b>{{ artist.movement }}</li>
+                        {% endif %}
+                        {% if artist.long_description %}
+                            <li><b>Description: </b>{{ artist.long_description }}</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
         </div>
         <h2>Arts:</h2>
-        <div class="art-list">
+        <!-- <div class="art-list">
             <a href="#" title="">
                 <div class="art-box">
                         <div class="art-title">
@@ -116,11 +124,9 @@
                 </div>
             </a>
 
-        </div>
+        </div> -->
         <div class="container" style="margin-bottom:30px">
-            
         </div>
-        
     </div>
 
 
