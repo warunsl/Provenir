@@ -81,7 +81,17 @@
     <!-- Include the navbar here -->
     {% include 'navbar.html' %}
     <div class="container" style="max-width:960px">
-        <div class="container top-container">
+        <div style="position: relative" class="container top-container">
+            {% if artist.linked == 'True' %}
+            <div style=" position: absolute; right: 5px; top: 5px;">
+                <span class="label label-primary">getty</span>
+                <span class="label label-primary">nga</span>
+            </div>
+            {% else %}
+            <div style=" position: absolute; right: 5px; top: 5px;">
+                <span class="label label-primary">{{ artist.source }}</span>
+            </div>
+            {% endif %}
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
                     <img class="img-thumb" src="{{ artist.image }}">
