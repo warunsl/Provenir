@@ -34,13 +34,21 @@ def artist(artistid=None):
     try:
         artist_object = artist_collection.find_one({'_id':bson.ObjectId(oid=str(artistid))})
         if artist_object:
+            sd = artist_object['short_description']
+            ld = artist_object['long_description']
+            artist_object['description'] = sd if len(sd) > len(ld) else ld
+            fixed_movement = artist_object['movement'][len('http://dbpedia.org/resource/'):].replace('_', ' ')
+            artist_object['movement'] = fixed_movement
             if artist_object['source'] == 'nga':
                 # first = artist_object['nga-data']['url'].split('.html')[0]
                 # nga_id = first[first.index('.') + 1:]
+                artist_object['image'] = "http://www.nga.gov" + artist_object['nga-data']['imagepath']
                 nga_artist_url = artist_object['nga-data']['url']
                 artist_to_art_record = artist_to_art_collection.find_one({'artistURL':nga_artist_url})
                 if artist_to_art_record:
                     art_ids = artist_to_art_record['arts']
+                    art_ids = set(art_ids)
+                    art_ids = list(art_ids)
                     arts = []
                     if len(art_ids) > 0:
                         artist_object['art_ids'] = art_ids
@@ -49,6 +57,9 @@ def artist(artistid=None):
                             if art_data_record:
                                 title = unicode(BeautifulSoup(art_data_record['title'], convertEntities=
                                    BeautifulSoup.HTML_ENTITIES))
+                                # print art_data_record['imagepath'][:4]
+                                if art_data_record['imagepath'][:4] not in "http":
+                                    art_data_record['imagepath'] = "http://www.nga.gov" + art_data_record['imagepath']
                                 arts.append({'id': art_id, 'title':title, 'image':art_data_record['imagepath']})
                         artist_object['arts'] = arts
             pprint(artist_object)

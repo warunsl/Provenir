@@ -84,7 +84,7 @@
         <div class="container top-container">
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
-                    <!-- <img class="img-thumb" src="//upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg/417px-Francesco_Melzi_-_Portrait_of_Leonardo_-_WGA14795.jpg"> -->
+                    <img class="img-thumb" src="{{ artist.image }}">
                 </div>
                 <div class="col-md-6">
                     <h1>{{ artist.name }}</h1>
@@ -98,29 +98,29 @@
                         {% if artist.movement %}
                             <li><b>Movement: </b>{{ artist.movement }}</li>
                         {% endif %}
-                        {% if artist.long_description %}
-                            <li><b>Description: </b>{{ artist.long_description }}</li>
+                        {% if artist.description %}
+                            <li><b>Description: </b>{{ artist.description }}</li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
         </div>
         <br>
+        {% if artist.art_ids %}
         <h2>Arts:</h2>
-            <div class="art-list">
-            {% if artist.art_ids %}
-                {% for art in artist.arts %}
-                <a href="#" title="">
-                    <div class="art-box">
-                            <div class="art-title">
-                                {{ art.title }}
-                            </div>
-                            <img src="{{ art.image }}" class="img-small" alt="">
-                    </div>
-                </a>
-                {% endfor %}
-            {% endif %}
-            </div>
+        <div class="art-list">
+            {% for art in artist.arts %}
+            <a href="#" title="">
+                <div class="art-box">
+                        <div class="art-title">
+                            {{ art.title }}
+                        </div>
+                        <img src="{{ art.image }}" class="img-small" alt="">
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
         <div class="container" style="margin-bottom:30px">
         </div>
     </div>
