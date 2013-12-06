@@ -1,18 +1,15 @@
 from pprint import pprint
 import re
 import csv
+import json
 import pymongo
 from pymongo import MongoClient
 
-common_artists = set()
-url_name_map = {}
+common_urls = []
 
 connection = MongoClient()
 db = connection.provenir
 collection = db.artist
-
-def remove_duplicates_from_collection():
-    pass
 
 
 #db.test.update({"x": "y"}, {"$set": {"a": "c"}})
@@ -20,40 +17,30 @@ def update_collection():
     dbpedia_regx = re.compile("/.*dbpedia.*/", re.IGNORECASE)
     records_to_update = collection.find({"url": dbpedia_regx})
     print records_to_update.count()
+
     foaf_regx = re.compile("/.*xmlns.*/", re.IGNORECASE)
-    # print collection.find().count()
     records_not_to_update = collection.find({"url": foaf_regx})
     print records_not_to_update.count()
-    result = collection.update({"url": dbpedia_regx}, {"$set": {"linked": "True"}})
-    pprint(result)
+
     result = collection.update({"url": foaf_regx}, {"$set": {"linked": "False"}})
     pprint(result)
 
+    for record in records_to_update:
+        if record['url'] in common_urls:
+            result = collection.update({"_id": record['_id']}, {"$set": {"linked": "True"}})
+        else:
+            result = collection.update({"_id": record['_id']}, {"$set": {"linked": "False"}})
 
-def find_common_artists():
-    with open("nga-reconciled-artist", "rb") as ngafile:
-        csv_reader = csv.reader(ngafile)
-        for row in csv_reader:
-            try:
-                url_name_map[row[1]] = row[0]
-            except KeyError:
-                pass
-    ngafile.close()
 
-    with open("getty-reconciled-artist", "rb") as gettyfile:
-        csv_reader = csv.reader(gettyfile)
+def get_common_linked_urls():
+    with open("fril-result-common-artist.csv", "rb") as commonsfile:
+        csv_reader = csv.reader(commonsfile)
         for row in csv_reader:
-            try:
-                url_name_map[row[1]]
-                common_artists.add(row[1])
-            except KeyError:
-                url_name_map[row[1]] = row[0]
-    gettyfile.close()
+            common_urls.append(row[0])
 
 
 def main():
-    find_common_artists()
-    remove_duplicates_from_collection()
+    get_common_linked_urls()
     update_collection()
 
 
