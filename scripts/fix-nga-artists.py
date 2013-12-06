@@ -41,7 +41,12 @@ def fix_mongo_collection():
                 count += 1
                 print count
         elif collection_nga_artists_cursor.count() > 1:
-            print "Uh oh"
+            for record in collection_nga_artists_cursor:
+                update_id = record['_id']
+                collection.update({"_id":update_id}, {"$set": {"nga-data": v}})
+                count += 1
+                print count
+                break
         else:
             print "No records found for ", k
     print "End of fix_mongo_collection", count
@@ -97,6 +102,7 @@ def get_nga_artists_from_mongo():
 def main():
     process_nga_source()
     fix_mongo_collection()
+    fix_duplicate_reconciled_artists()
 
 
 if __name__ == '__main__':
