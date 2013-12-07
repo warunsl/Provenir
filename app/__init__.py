@@ -25,9 +25,10 @@ def index():
 def about():
     return render_template('about.html')
 
-@app.route('/art')
-def art():
-    return render_template('art.html')
+@app.route('/art/<artid>')
+def art(artid=None):
+
+    return render_template('art.html', art=art_object)
 
 @app.route('/artist/<artistid>')
 def artist(artistid=None):
@@ -39,6 +40,10 @@ def artist(artistid=None):
             artist_object['description'] = sd if len(sd) > len(ld) else ld
             fixed_movement = artist_object['movement'][len('http://dbpedia.org/resource/'):].replace('_', ' ')
             artist_object['movement'] = fixed_movement
+            try:
+                artist_object['nga-data']
+            except KeyError:
+                return render_template('404.html')
             if artist_object['source'] == 'nga':
                 # first = artist_object['nga-data']['url'].split('.html')[0]
                 # nga_id = first[first.index('.') + 1:]
