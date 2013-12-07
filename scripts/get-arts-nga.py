@@ -46,16 +46,15 @@ def create_art_collection():
     for art in transformed_arts:
         try:
             collection.insert(art)
-        except pymongo.errors.DuplicateKeyError:
-            pass
+        except pymongo.errors.DuplicateKeyError, e:
+            print e
 
 
-def transform_art():
+def transform_art_and_create_collection():
     global transformed_arts
-    art_dict = {}
-    count = 0
     for art in arts:
         # title = unicode(BeautifulSoup(art["title"], convertEntities=BeautifulSoup.HTML_ENTITIES))
+        art_dict = {}
         art_dict["title"] = art["title"]
 
         image = art["imagepath"]
@@ -69,16 +68,19 @@ def transform_art():
             art_dict["artist"] = res['name']
         else:
             art_dict["artist"] = ""
+
         art_dict["short_description"] = art["creditline"]
         try:
             art_dict["organizations"] = art_entity_map[art["id"]]
         except KeyError:
             art_dict["organizations"] = []
+
         art_dict["source"] = "nga"
         art_dict["nga-data"] = art
-        count += 1
-        print count
-        transformed_arts.append(art_dict)
+        try:
+            collection.insert(art_dict)
+        except pymongo.errors.DuplicateKeyError, e:
+            print e
         
 
 def create_org_collection():
@@ -118,9 +120,7 @@ def get_nga_arts():
 def main():
     get_nga_arts()
     get_organizations()
-    transform_art()
-    print len(transformed_arts)
-    create_art_collection()
+    transform_art_and_create_collection()
 
 
 if __name__ == '__main__':
