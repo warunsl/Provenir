@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Provenir - {{artist.name}}</title>
+    <title>Provenir - {{ artist.name | safe}}</title>
 
     <style>
     .body { background: #F8EFFB; }
@@ -97,7 +97,7 @@
                     <img class="img-rounded" src="{{ artist.image }}">
                 </div>
                 <div class="col-md-6">
-                    <h1>{{ artist.name }}</h1>
+                    <h1>{{ artist.name | safe}}</h1>
                     <ul style="font-size: 16px; list-style: none outside none;">    
                         {% if artist.birth_date %}
                             <li><b>Birth: </b> {{ artist.birth_date }}</li>

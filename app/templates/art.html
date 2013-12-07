@@ -8,7 +8,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Provenir - {{ art.title }}</title>
+        <title>Provenir - {{ art.title | safe}}</title>
 
         <style>
             .body { background: #F8EFFB; }
@@ -63,7 +63,7 @@
                     <img class="img-rounded" src="{{ art.image }}">
                 </div>
                 <div class="col-md-6">
-                    <h1>{{ art.title }}</h1>
+                    <h1>{{ art.title | safe }}</h1>
                     <ul style="font-size: 16px; list-style: none outside none;">    
                         {% if art.artist %}
                             <li><b>Artist: </b> <a href="{{ url_for('artist', artistid=art.artist_id)  }}">{{ art.artist }}</a></li>
