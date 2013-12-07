@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>404 - Page Not Found</title>
+
+        <style>
+            .body { background: #F8EFFB; }
+        </style>
+
+        <!-- Bootstrap core CSS -->
+        <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+        
+        <link href="{{ url_for('static', filename='docs.css') }}" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <!-- Include the navbar here -->
+        {% include 'navbar.html' %}
+        <div class="container">
+        	<div class="row" style="margin-top:40px">
+        		<div class="col-md-4 col-md-offset-3" style="background: none repeat scroll 0 0 #FFFFFF;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    text-align: center;">
+		           <h1>404</h1>
+		           <h2>Page Not Found</h2>
+        		</div>
+        	</div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+        <script src="{{ url_for('static', filename='holder.js') }}"></script>
+        <script src="{{ url_for('static', filename='application.js') }}"></script>
+    </body>
+</html>
