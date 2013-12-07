@@ -58,7 +58,7 @@ def art(artid=None):
                     orglist += '<a href="">{0}</a>, '.format(record['entity_label'])
                 orglist = orglist[:-6] + '</a>'
                 print orglist
-            art_object['organizationslist'] = orglist
+                art_object['organizationslist'] = orglist
             return render_template('art.html', art=art_object)
         else:
             return render_template('404.html')
@@ -71,6 +71,7 @@ def artist(artistid=None):
     try:
         artist_object = artist_collection.find_one({'_id':bson.ObjectId(oid=str(artistid))})
         if artist_object:
+            pprint(artist_object)
             sd = artist_object['short_description']
             ld = artist_object['long_description']
             artist_object['description'] = sd if len(sd) > len(ld) else ld
@@ -83,7 +84,11 @@ def artist(artistid=None):
             if artist_object['source'] == 'nga':
                 # first = artist_object['nga-data']['url'].split('.html')[0]
                 # nga_id = first[first.index('.') + 1:]
-                artist_object['image'] = "http://www.nga.gov" + artist_object['nga-data']['imagepath']
+                if artist_object['linked'] == 'False':
+                    artist_object['image'] = "http://www.nga.gov" + artist_object['nga-data']['imagepath']
+                else:
+                    artist_object['image'] = artist_object['image_url']
+
                 nga_artist_url = artist_object['nga-data']['url']
                 artist_to_art_record = artist_to_art_collection.find_one({'artistURL':nga_artist_url})
                 if artist_to_art_record:
