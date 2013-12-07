@@ -67,9 +67,15 @@
         <script src="{{ url_for('static', filename='application.js') }}"></script>
         <script src="{{ url_for('static', filename='typeahead.min.js') }}"></script>
         <script type="text/javascript" charset="utf-8">
-        $('#input').typeahead({        
-           local: ['alpha asdas dasd as dsa da s da s','allpha2','alpha3','bravo','charlie','delta','epsilon','gamma','zulu']
-       });
+        $('#input').typeahead([{        
+            name: 'test',
+            local: ['alpha','allpha2','alpha3','bravo','charlie','delta','epsilon','gamma','zulu'],
+            header: '<h4 class="league-name">Artists</h4>'
+        },{        
+            name: 'test2',
+            local: ['alpha','allpha2','alpha3','bravo','charlie','delta','epsilon','gamma','zulu'],
+            header: '<h4 class="league-name">Arts</h4>'
+        }]);
         </script>
     </body>
 </html>

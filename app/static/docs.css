@@ -1243,3 +1243,14 @@ h1[id] {
     height: 34px;
     line-height: 0.33;
 }
+
+.tt-dropdown-menu h4{
+  margin-left: 10px;
+  border-bottom: 1px solid #dedede;
+  margin-right: 10px;
+  padding-bottom: 4px;
+}
+
+.tt-dropdown-menu{
+  width: 100%;
+}
