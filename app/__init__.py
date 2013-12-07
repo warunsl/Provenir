@@ -11,6 +11,7 @@ connection = MongoClient()
 db = connection.provenir
 artist_collection = db.artist
 art_collection = db.art
+org_collection = db.organization
 
 gldb = connection.gladondb
 artist_to_art_collection = gldb.artisttoart
@@ -27,15 +28,40 @@ def index():
 def about():
     return render_template('about.html')
 
+
+@app.route('/organization/<orgid>')
+def organization(orgid=None):
+    try:
+        org_object = org_collection.find_one({'_id':bson.ObjectId(oid=str(orgid))})
+        if org_object:
+            return render_template('organization.html', org=org_record)
+        else:
+            return render_template('404.html')
+    except bson.errors.InvalidId, e:
+        return render_template('404.html')
+
+
 @app.route('/art/<artid>')
 def art(artid=None):
     try:
         art_object = art_collection.find_one({'_id':bson.ObjectId(oid=str(artid))})
-        artist = artist_collection.find_one({'name':art_object['artist']})
-        artist_id = artist['_id']
-        art_object['artist_id'] = artist_id
-        pprint(art_object)
-        return render_template('art.html', art=art_object)
+        if art_object:
+            artist = artist_collection.find_one({'name':art_object['artist']})
+
+            artist_id = artist['_id']
+            art_object['artist_id'] = artist_id
+
+            if len(art_object['organizations']) > 0:
+                orglist = ""
+                for org in art_object['organizations']:
+                    record = org_collection.find_one({'entity_url':org})
+                    orglist += '<a href="">{0}</a>, '.format(record['entity_label'])
+                orglist = orglist[:-6] + '</a>'
+                print orglist
+            art_object['organizationslist'] = orglist
+            return render_template('art.html', art=art_object)
+        else:
+            return render_template('404.html')
     except bson.errors.InvalidId, e:
         return render_template('404.html')
 

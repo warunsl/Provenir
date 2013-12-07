@@ -7,31 +7,32 @@ connection = MongoClient()
 db = connection.provenir
 collection = db.organization
 
-entities = []
-
-
-def get_entities():
-    global entities
-    entities_cursor = collection.find()
-    for entity in entities_cursor:
-        entities.append(entity['entity_url'])
-    print len(entities)
+entities_name_map = {}
 
 
 def fix_entities():
-    with open('', 'rb') as jsonfile:
+    global entities_name_map
+    with open('entitiesToReconcile.json', 'rb') as jsonfile:
         for line in jsonfile:
             try:
                 records = json.loads(line)
+                types = set()
                 for record in records:
+                    entities_name_map[record['url']] = record['label']
+
+                for url, label in entities_name_map.items():
+                    record_to_update = collection.find_one({'entity_url':url})
+                    collection.update({"_id":record_to_update['_id']}, {"$set": {"entity_label": label}})
+                print "Length", len(entities_name_map.keys())
+                res = collection.find({ 'entity_label' : { "$exists" : "true" } })
+                print "Updated records ", res.count()
             except TypeError, e:
                 print "JSON format error!"
                 print e
 
 
 def main():
-    get_entities()
-    # fix_entities()
+    fix_entities()
 
 
 if __name__ == '__main__':
