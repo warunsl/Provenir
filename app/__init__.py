@@ -9,8 +9,10 @@ from BeautifulSoup import BeautifulSoup
 
 connection = MongoClient()
 db = connection.provenir
-gldb = connection.gladondb
 artist_collection = db.artist
+art_collection = db.art
+
+gldb = connection.gladondb
 artist_to_art_collection = gldb.artisttoart
 art_data_collection = gldb.artdata
 
@@ -27,8 +29,12 @@ def about():
 
 @app.route('/art/<artid>')
 def art(artid=None):
+    try:
+        art_object = art_collection.find_one({'_id':bson.ObjectId(oid=str(artid))})
+        return render_template('art.html', art=art_object)
+    except bson.errors.InvalidId, e:
+        return render_template('404.html')
 
-    return render_template('art.html', art=art_object)
 
 @app.route('/artist/<artistid>')
 def artist(artistid=None):
@@ -58,16 +64,17 @@ def artist(artistid=None):
                     if len(art_ids) > 0:
                         artist_object['art_ids'] = art_ids
                         for art_id in art_ids:
-                            art_data_record = art_data_collection.find_one({'id':art_id})
+                            art_data_record = art_collection.find_one({'nga-data.id':art_id})
                             if art_data_record:
                                 title = unicode(BeautifulSoup(art_data_record['title'], convertEntities=
                                    BeautifulSoup.HTML_ENTITIES))
                                 # print art_data_record['imagepath'][:4]
-                                if art_data_record['imagepath'][:4] not in "http":
-                                    art_data_record['imagepath'] = "http://www.nga.gov" + art_data_record['imagepath']
-                                arts.append({'id': art_id, 'title':title, 'image':art_data_record['imagepath']})
+                                # if art_data_record['imagepath'][:4] not in "http":
+                                #     art_data_record['imagepath'] = "http://www.nga.gov" + art_data_record['imagepath']
+                                arts.append({'id': art_data_record['_id'], 'title':title, 'image':art_data_record['image']})
+                            else:
+                                print "No records found"
                         artist_object['arts'] = arts
-            pprint(artist_object)
             return render_template('artist.html', artist=artist_object)
         else:
             return render_template('404.html')

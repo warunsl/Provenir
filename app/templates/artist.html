@@ -125,7 +125,7 @@
                         <div class="art-title">
                             {{ art.title }}
                         </div>
-                        <img src="{{ art.image }}" class="img-small" alt="">
+                        <a href="{{ url_for('art', artid=art.id) }}"><img src="{{ art.image }}" class="img-small" alt=""></a>
                 </div>
             </a>
             {% endfor %}
