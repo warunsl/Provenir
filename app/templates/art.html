@@ -60,7 +60,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
-                    <img class="img-rounded" src="{{ art.image }}">
+                    <img style="width:200px" class="img-rounded" src="{{ art.image }}">
                 </div>
                 <div class="col-md-6">
                     <h1>{{ art.title | safe }}</h1>
@@ -70,6 +70,9 @@
                         {% endif %}
                         {% if art.short_description %}
                             <li><b>Description: </b>{{ art.short_description }}</li>
+                        {% endif %}
+                        {% if art.organizationslist %}
+                            <li><b>Organizations: </b>{{ art.organizationslist }}</li>
                         {% endif %}
                     </ul>
                 </div>
