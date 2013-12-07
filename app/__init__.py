@@ -31,7 +31,10 @@ def about():
 def art(artid=None):
     try:
         art_object = art_collection.find_one({'_id':bson.ObjectId(oid=str(artid))})
-        print art_object['source']
+        artist = artist_collection.find_one({'name':art_object['artist']})
+        artist_id = artist['_id']
+        art_object['artist_id'] = artist_id
+        pprint(art_object)
         return render_template('art.html', art=art_object)
     except bson.errors.InvalidId, e:
         return render_template('404.html')
