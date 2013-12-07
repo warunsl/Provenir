@@ -63,7 +63,9 @@ def transform_art_and_create_collection():
 
         art_dict["short_description"] = art["creditline"]
         try:
-            art_dict["organizations"] = art_entity_map[art["id"]]
+            art_id = art["id"]
+            art_id = str(art_id)
+            art_dict["organizations"] = art_entity_map[art_id]
         except KeyError:
             art_dict["organizations"] = []
 
@@ -90,11 +92,14 @@ def get_organizations():
     entity_cursor = entity_collection.find({'$or' : [{'type':'Organization'}, {'type':'Company'}, {'type':'Facility'}] })
     for entity in entity_cursor:
         entities.append(entity)
+
     for entity in entities:
         entity_art_map[entity['entityURL']] = entity['arts']
+
     for entity, arts in entity_art_map.items():
         for art in arts:
             unique_arts.add(art)
+
     for art in unique_arts:
         for entity in entity_art_map.keys():
             if art in entity_art_map[entity]:
@@ -102,6 +107,7 @@ def get_organizations():
                     art_entity_map[art].append(entity)
                 except KeyError:
                     art_entity_map[art] = [entity]
+
     print "End get_organizations"
 
 
