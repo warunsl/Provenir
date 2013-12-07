@@ -8,7 +8,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Provenir - Art Details</title>
+        <title>Provenir - {{ art.title }}</title>
 
         <style>
             .body { background: #F8EFFB; }
@@ -52,50 +52,59 @@
 
     <body>
         <!-- Include the navbar here -->
-        {% include 'navbar.html' %}
+    {% include 'navbar.html' %}
     <div class="container" style="max-width:960px">
-        
-        <div class="container top-container">
+        <div style="position: relative" class="container top-container">
+            <div style=" position: absolute; right: 5px; top: 5px;">
+                <span class="label label-primary">{{ art.source }}</span>
+            </div>
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
-                    <img class="img-thumbnail" src="http://media.nga.gov/public/objects/5/7/6/576-primary-0-440x400.jpg">
+                    <img class="img-thumb" src="{{ art.image }}">
                 </div>
                 <div class="col-md-6">
-                    <h1>The Maas at Dordrecht</h1>
+                    <h1>{{ art.title }}</h1>
                     <ul style="font-size: 16px; list-style: none outside none;">    
-                        <li><b>Artists:</b> <a href="#">Cuyp, Aelbert</a> </li>
-                        <li><b>Created:</b> c. 1650</li>
-                        <li><b>Era:</b> <a href="#">1600-1700</a></li>
-                        <li><b>Organizations:</b> <a href="#">Duveen Brothers, Inc.</a>, <a href="#">The A.W. Mellon Educational and Charitable Trust</a></b></li>
+                        {% if art.artist %}
+                            <li><b>Artist: </b> {{ art.artist }}</li>
+                        {% endif %}
+                        {% if art.short_description %}
+                            <li><b>Description: </b>{{ art.short_description }}</li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
         </div>
+        <br>
+        {% if art.provenance %}
         <h2> Provenance:</h2>
-            <div class="provenance-container container" style="max-width:960px">
-                <div class="provenance-record row">
-                    <div class="date col-md-4">1785</div>
-                    <div class="col-md-8">
-                        Johan van der Linden van Slingeland [1701-1782], Dordrecht, by 1752.[1] (his estate sale, at his residence by J. Yver and A. Delfos, Dordrecht, 22 August 1785 and days following, no. 70)
-                    </div>
-                </div>
-                <div class="provenance-record row">
-                    <div class="date col-md-4">1804 - 1814</div>
-                    <div class="col-md-8">"Rens" or "Delfos."[2] (Alexis Delahante, London), c. 1804 to 1814</div>
-                </div>
-                <div class="provenance-record row">
-                    <div class="date col-md-4">1815</div>
-                    <div class="col-md-8">sold to Abraham Hume, Bart. [1749-1838], Wormley, Hertfordshire, by 1815</div>
-                </div>
-                <div class="provenance-record row">
-                    <div class="date col-md-4">1851</div>
-                    <div class="col-md-8">[3] by inheritance to his grandson, John Hume Cust, Viscount Alford, M. P. [1812-1851], Ashridge Park, Hertfordshire</div>
-                </div>
-                <div class="provenance-record row">
-                    <div class="date col-md-4">1867</div>
-                    <div class="col-md-8">by inheritance to his son, John William Spencer, 2nd earl Brownlow [1842-1867], Ashridge Park</div>
+        <div class="provenance-container container" style="max-width:960px">
+            <div class="provenance-record row">
+                <div class="date col-md-4">1785</div>
+                <div class="col-md-8">
+                    Johan van der Linden van Slingeland [1701-1782], Dordrecht, by 1752.[1] (his estate sale, at his residence by J. Yver and A. Delfos, Dordrecht, 22 August 1785 and days following, no. 70)
                 </div>
             </div>
+            <div class="provenance-record row">
+                <div class="date col-md-4">1804 - 1814</div>
+                <div class="col-md-8">"Rens" or "Delfos."[2] (Alexis Delahante, London), c. 1804 to 1814</div>
+            </div>
+            <div class="provenance-record row">
+                <div class="date col-md-4">1815</div>
+                <div class="col-md-8">sold to Abraham Hume, Bart. [1749-1838], Wormley, Hertfordshire, by 1815</div>
+            </div>
+            <div class="provenance-record row">
+                <div class="date col-md-4">1851</div>
+                <div class="col-md-8">[3] by inheritance to his grandson, John Hume Cust, Viscount Alford, M. P. [1812-1851], Ashridge Park, Hertfordshire</div>
+            </div>
+            <div class="provenance-record row">
+                <div class="date col-md-4">1867</div>
+                <div class="col-md-8">by inheritance to his son, John William Spencer, 2nd earl Brownlow [1842-1867], Ashridge Park</div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="container" style="margin-bottom:30px">
+        </div>
     </div>
 
         <!-- Bootstrap core JavaScript

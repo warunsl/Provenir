@@ -120,12 +120,12 @@
         <h2>Arts:</h2>
         <div class="art-list">
             {% for art in artist.arts %}
-            <a href="#" title="">
+            <a href="{{ url_for('art', artid=art.id) }}">
                 <div class="art-box">
                         <div class="art-title">
                             {{ art.title }}
                         </div>
-                        <a href="{{ url_for('art', artid=art.id) }}"><img src="{{ art.image }}" class="img-small" alt=""></a>
+                        <img src="{{ art.image }}" class="img-small" alt="">
                 </div>
             </a>
             {% endfor %}
