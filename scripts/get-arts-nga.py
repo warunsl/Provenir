@@ -42,14 +42,6 @@ arts = []
 transformed_arts = []
 
 
-def create_art_collection():
-    for art in transformed_arts:
-        try:
-            collection.insert(art)
-        except pymongo.errors.DuplicateKeyError, e:
-            print e
-
-
 def transform_art_and_create_collection():
     global transformed_arts
     for art in arts:
@@ -78,14 +70,16 @@ def transform_art_and_create_collection():
         art_dict["source"] = "nga"
         art_dict["nga-data"] = art
         try:
-            collection.insert(art_dict)
+            print collection.insert(art_dict)
         except pymongo.errors.DuplicateKeyError, e:
-            print e
+            print "Skipping ", e
+    print "End transform_art_and_create_collection"
         
 
 def create_org_collection():
     for entity, arts in entity_art_map.items():
         org_collection.insert({'entity_url':entity, 'nga-art-ids':arts})
+    print "End create_org_collection"
 
 
 def get_organizations():
@@ -93,7 +87,7 @@ def get_organizations():
     global entity_art_map
     global art_entity_map
     unique_arts = set()
-    entity_cursor = entity_collection.find({'type':'Organization'})
+    entity_cursor = entity_collection.find({'$or' : [{'type':'Organization'}, {'type':'Company'}, {'type':'Facility'}] })
     for entity in entity_cursor:
         entities.append(entity)
     for entity in entities:
@@ -108,6 +102,7 @@ def get_organizations():
                     art_entity_map[art].append(entity)
                 except KeyError:
                     art_entity_map[art] = [entity]
+    print "End get_organizations"
 
 
 def get_nga_arts():
@@ -115,6 +110,7 @@ def get_nga_arts():
     arts_cursor = artdata_collection.find()
     for art in arts_cursor:
         arts.append(art)
+    print "End get_nga_arts"
 
 
 def main():

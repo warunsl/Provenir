@@ -60,13 +60,13 @@
             </div>
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
-                    <img class="img-thumb" src="{{ art.image }}">
+                    <img class="img-rounded" src="{{ art.image }}">
                 </div>
                 <div class="col-md-6">
                     <h1>{{ art.title }}</h1>
                     <ul style="font-size: 16px; list-style: none outside none;">    
                         {% if art.artist %}
-                            <li><b>Artist: </b> {{ art.artist }}</li>
+                            <li><b>Artist: </b> <a href="{{ url_for('artist', artistid=art.artist_id)  }}">{{ art.artist }}</a></li>
                         {% endif %}
                         {% if art.short_description %}
                             <li><b>Description: </b>{{ art.short_description }}</li>
