@@ -94,7 +94,9 @@
             {% endif %}
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
-                    <img class="img-rounded" src="{{ artist.image }}">
+                    {% if artist.image %}
+                        <img class="img-rounded" src="{{ artist.image | safe}}">
+                    {% endif %}
                 </div>
                 <div class="col-md-6">
                     <h1>{{ artist.name | safe}}</h1>

@@ -29,6 +29,7 @@ def fix_entities():
             except TypeError, e:
                 print "JSON format error!"
                 print e
+    jsonfile.close()
 
 
 def main():
