@@ -2,14 +2,62 @@ from pprint import pprint
 import re
 import csv
 import json
+import urllib
 import pymongo
 from pymongo import MongoClient
+from BeautifulSoup import BeautifulSoup
 
 common_urls = []
 
 connection = MongoClient()
 db = connection.provenir
 collection = db.artist
+
+
+def convert(input):
+    if isinstance(input, dict):
+        return {convert(key): convert(value) for
+                key, value in input.iteritems()}
+    elif isinstance(input, list):
+        return [convert(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
+
+
+def fix_dbpedia_artist_image_urls():
+    with open('imageurls.json', 'rb') as imageurlfile:
+        all_records = []
+        artist_image_map = {}
+        for line in imageurlfile:
+            line = line.decode('utf-8')
+            all_records = json.loads((line))
+
+        print len(all_records)
+        for record in all_records:
+            try:
+                url = record[u'imgURL'].decode('utf-8') 
+                artist_image_map[record[u'url']] = url
+            except (UnicodeEncodeError, KeyError) as e:
+                print "Skipped.."
+                pass
+
+        print len(artist_image_map.keys())
+            
+        records = [record for record in collection.find({'linked':'True'})]
+
+        print "DBpedia records ", len(records)
+
+        for record in records:
+            try:
+                collection.update({"_id":record['_id']}, {"$set": {"image_url": artist_image_map[record['url']]}})
+            except (Exception, KeyError) as e:
+                pass
+
+        # Verify
+        print "Fixed records ", collection.find({ 'image_url' : { "$exists" : "true" } }).count()
+    imageurlfile.close()    
 
 
 def fix_duplicate_dbpedia():
@@ -65,9 +113,10 @@ def get_common_linked_urls():
 
 
 def main():
-    get_common_linked_urls()
-    update_collection()
-    fix_duplicate_dbpedia()
+    # get_common_linked_urls()
+    # update_collection()
+    # fix_duplicate_dbpedia()
+    fix_dbpedia_artist_image_urls()
 
 
 if __name__ == '__main__':
