@@ -72,7 +72,11 @@
                             <li><b>Description: </b>{{ art.short_description }}</li>
                         {% endif %}
                         {% if art.organizationslist %}
-                            <li><b>Organizations: </b>{{ art.organizationslist }}</li>
+                            <li><b>Organizations: </b>
+                            {% for org in art.organizationslist %}
+                                <a href="{{ url_for('organization', orgid=org.0) }}">{{ org.1 }}</a>
+                            </li>
+                            {% endfor %}
                         {% endif %}
                     </ul>
                 </div>
