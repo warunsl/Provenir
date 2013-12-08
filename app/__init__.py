@@ -35,6 +35,11 @@ def about():
     return render_template('about.html')
 
 
+@app.route('/viz')
+def viz():
+    return render_template('404.html')
+
+
 @app.route('/organization/<orgid>')
 def organization(orgid=None):
     try:
