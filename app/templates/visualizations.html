@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Provenir - Visualizations</title>
+
+        <style>
+            .body { background: #F8EFFB; }
+        </style>
+
+        <!-- Bootstrap core CSS -->
+        <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+        
+        <link href="{{ url_for('static', filename='docs.css') }}" rel="stylesheet">
+
+    </head>
+
+    <body>
+        <!-- Include the navbar here -->
+        {% include 'navbar.html' %}
+        <div class="container">
+            <br>
+            <h1>Arts and their Organizations</h1>
+            <img src="{{ url_for('static', filename='orgs.svg') }}" alt="">
+
+        </div>
+
+        <!-- Include the footer here -->
+        <!-- {% include 'footer.html' %} -->
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
+        <script src="{{ url_for('static', filename='holder.js') }}"></script>
+        <script src="{{ url_for('static', filename='application.js') }}"></script>
+    </body>
+</html>

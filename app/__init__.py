@@ -34,10 +34,12 @@ def index():
 def about():
     return render_template('about.html')
 
+    
+
 
 @app.route('/viz')
 def viz():
-    return render_template('404.html')
+    return render_template('visualizations.html')
 
 
 @app.route('/organization/<orgid>')
