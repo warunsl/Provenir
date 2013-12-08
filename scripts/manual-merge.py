@@ -37,9 +37,10 @@ def main():
     art_collection.remove({'_id':getty_record['_id']})
 
     new_record = {}
+    new_record['title'] = nga_record['nga_data']['title']
     new_record['artist'] = nga_record['artist']
     new_record['artist_url'] = nga_record['nga_data']['artists - url']
-
+    new_record['image'] = nga_record['nga_data']['imagepath']
     # "artist" : "Giannicola di Paolo",
     # "artist_url" : "http://dbpedia.org/resource/Giannicolo_da_Perugia",
     # "getty_data" : {
