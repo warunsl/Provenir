@@ -42,6 +42,25 @@
                 font-size: 16px;
             }
 
+            .provenance-data{
+                margin-top:8px;
+            }
+
+            .provenance-record{
+                position: relative;
+            }
+
+            .top-left{
+                position: absolute;
+                top:6px;
+                left:6px;
+                font-size:10px;
+            }
+
+            .getty{
+                background-color:  #28B85B;
+            }
+
             .provenance-container > div:nth-child(odd){ background-color:#eee; }
             .provenance-container > div:nth-child(even){ background-color:#fff; }
             
@@ -95,30 +114,22 @@
         <h2> Provenance:</h2>
         <div class="provenance-container container" style="max-width:960px">
             {% for prov in art.provenance %}
-                {{ prov }}
-            {% endfor %}
-            <!-- <div class="provenance-record row">
-                <div class="date col-md-4">1785</div>
-                <div class="col-md-8">
-                    Johan van der Linden van Slingeland [1701-1782], Dordrecht, by 1752.[1] (his estate sale, at his residence by J. Yver and A. Delfos, Dordrecht, 22 August 1785 and days following, no. 70)
+                 <div class="provenance-record row">
+                    <div class="date col-md-2">
+                        <span class="label label-primary top-left {{prov.source}}">{{prov.source}}</span>
+                        {{ prov.startDate }}<!-- - {{ prov.startDate }}-->
+                    </div>
+                    <div class="col-md-10 provenance-data">
+                        {{ prov.provenance }}
+                        
+                        
+                    </div>
                 </div>
-            </div>
-            <div class="provenance-record row">
-                <div class="date col-md-4">1804 - 1814</div>
-                <div class="col-md-8">"Rens" or "Delfos."[2] (Alexis Delahante, London), c. 1804 to 1814</div>
-            </div>
-            <div class="provenance-record row">
-                <div class="date col-md-4">1815</div>
-                <div class="col-md-8">sold to Abraham Hume, Bart. [1749-1838], Wormley, Hertfordshire, by 1815</div>
-            </div>
-            <div class="provenance-record row">
-                <div class="date col-md-4">1851</div>
-                <div class="col-md-8">[3] by inheritance to his grandson, John Hume Cust, Viscount Alford, M. P. [1812-1851], Ashridge Park, Hertfordshire</div>
-            </div>
-            <div class="provenance-record row">
-                <div class="date col-md-4">1867</div>
-                <div class="col-md-8">by inheritance to his son, John William Spencer, 2nd earl Brownlow [1842-1867], Ashridge Park</div>
-            </div> -->
+            {% endfor %}
+          
+            
+
+        
         </div>
         {% endif %}
         <div class="container" style="margin-bottom:30px">

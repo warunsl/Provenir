@@ -172,7 +172,7 @@ def search_art():
     result = []
     cursor = db.command("text", "art" , 
         search=query,
-        limit=20)
+        limit=5)
     for record in cursor['results']:
         obj = {
             "value": record["obj"]["title"],
@@ -191,7 +191,7 @@ def search_artist():
     result = []
     cursor = db.command("text", "artist" , 
         search=query,
-        limit=20)
+        limit=5)
     for record in cursor['results']:
         obj = {
             "value": record["obj"]["name"],
