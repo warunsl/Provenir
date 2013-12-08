@@ -16,8 +16,8 @@ artist_collection = db.artist
 art_collection = db.art
 org_collection = db.organization
 
-myDb = connection['548db']
-art_collection_test = myDb.artdata
+# myDb = connection['548db']
+# art_collection_test = myDb.artdata
 
 gldb = connection.gladondb
 artist_to_art_collection = gldb.artisttoart
@@ -152,12 +152,13 @@ def artist(artistid=None):
     except bson.errors.InvalidId, e:
         print "Invalid ID"
         return render_template('404.html')
-    
+
+
 @app.route('/search/art')
 def search_art():
     query = request.args.get('query')
     result = []
-    cursor = myDb.command("text", "artdata" , 
+    cursor = db.command("text", "art" , 
         search=query,
         limit=20)
     for record in cursor['results']:
@@ -169,14 +170,14 @@ def search_art():
     resp = Response(response=dumps(result),
                     status=200,
                     mimetype="application/json")
-
     return resp
+
 
 @app.route('/search/artist')
 def search_artist():
     query = request.args.get('query')
     result = []
-    cursor = myDb.command("text", "artistsFixed" , 
+    cursor = db.command("text", "artist" , 
         search=query,
         limit=20)
     for record in cursor['results']:
@@ -188,5 +189,4 @@ def search_artist():
     resp = Response(response=dumps(result),
                     status=200,
                     mimetype="application/json")
-
     return resp
