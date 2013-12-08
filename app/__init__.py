@@ -73,26 +73,27 @@ def art(artid=None):
         if art_object:
             pprint(art_object)
             #Check if it is a NGA art
-            if not art_object["linked"] == 'True' and art_object["source"] == 'nga':
-                artist = artist_collection.find_one({'name':art_object['artist']})
-                artist_id = artist['_id']
-                art_object['artist_id'] = artist_id
+            try:
+                if art_object["linked"] == 'True':
+                    artist = artist_collection.find_one({'url':art_object['artist_url']})
+                    artist_id = artist['_id']
+                    print artist_id
+                    art_object['artist_id'] = artist_id
+            except KeyError:
+                if art_object["source"] == 'nga':
+                    artist = artist_collection.find_one({'name':art_object['artist']})
+                    artist_id = artist['_id']
+                    art_object['artist_id'] = artist_id
 
-                if len(art_object['organizations']) > 0:
-                    orglist = []
-                    for org in art_object['organizations']:
-                        record = org_collection.find_one({'entity_url':org})
-                        orglist.append((record['_id'], record['entity_label']))
-                    art_object['organizationslist'] = orglist
+                    if len(art_object['organizations']) > 0:
+                        orglist = []
+                        for org in art_object['organizations']:
+                            record = org_collection.find_one({  'entity_url':org})
+                            orglist.append((record['_id'], record['entity_label']))
+                        art_object['organizationslist'] = orglist
 
-            elif not art_object["linked"] == 'True' and art_object["source"] == 'getty':
-                art_object["image"] = "http://www.nga.gov/content/dam/ngaweb/placeholder-90x90.jpg"
-
-            elif art_object["linked"] == 'True':
-                artist = artist_collection.find_one({'url':art_object['artist_url']})
-                artist_id = artist['_id']
-                print artist_id
-                art_object['artist_id'] = artist_id
+                elif art_object["source"] == 'getty':
+                    art_object["image"] = "http://www.nga.gov/content/dam/ngaweb/placeholder-90x90.jpg"
 
             return render_template('art.html', art=art_object)
         else:
@@ -107,6 +108,7 @@ def artist(artistid=None):
         print "artistid ", artistid
         artist_object = artist_collection.find_one({'_id':bson.ObjectId(oid=str(artistid))})
         if artist_object:
+            pprint(artist_object)
             sd = artist_object['short_description']
             ld = artist_object['long_description']
             artist_object['description'] = sd if len(sd) > len(ld) else ld
@@ -115,12 +117,17 @@ def artist(artistid=None):
             try:
                 artist_object['nga_data']
             except KeyError:
-                return render_template('404.html')
+                pass
+                # return render_template('404.html')
             if artist_object['source'] == 'nga':
                 # first = artist_object['nga_data']['url'].split('.html')[0]
                 # nga_id = first[first.index('.') + 1:]
-                if artist_object['linked'] == 'False':
+                try:
+                    artist_object['linked']
+                    artist_object['image'] = artist_object['image_url']
+                except KeyError:
                     artist_object['image'] = "http://www.nga.gov" + artist_object['nga_data']['imagepath']
+
                 else:
                     artist_object['image'] = artist_object['image_url']
 
