@@ -30,11 +30,44 @@ def convert(input):
 
 
 def push_getty_provenance():
-    pass
+    global common_arts
+    # print len(common_arts)
+    getty_ids = []
+    for record in common_arts:
+        getty_ids.append(record['getty_data']['picture_id'])
+
+    count = 0
+    getty_records = art_collection.find({'source':'getty'})
+    for record in getty_records:
+        if int(record['getty_data']['picture_id']) not in getty_ids:
+            getty_id = int(record['getty_data']['picture_id'])
+            prov_record = getty_prov_collection.find_one({'picId':getty_id})
+            # print prov_record['provenanceArr']
+            count += 1
+            new_prov = transform_getty_prov(prov_record['provenanceArr'])
+            # print record['_id']
+            # print record['getty_data']['picture_id']
+            art_collection.update({'_id':record['_id']}, {"$set": {"provenance":new_prov}})
+            print record['_id']
+    print count
 
 
 def push_nga_provenance():
-    pass
+    nga_records = []
+    nga_records_cursor = nga_prov_collection.find()
+    for record in nga_records_cursor:
+        nga_records.append(record)
+
+    count = 0
+    for art in nga_records:
+        # pprint(art)
+        old_prov = art['provenanceArr']
+        new_prov = transform_nga_prov(old_prov)
+        search_id = art['artId']
+        record_to_update = art_collection.find_one({'nga_data.id':search_id})
+        count += 1
+        art_collection.update({'_id':record_to_update['_id']}, {"$set": {"provenance":new_prov}})
+    print "Count ", count
 
 
 def transform_nga_prov(nga_prov):
@@ -115,9 +148,9 @@ def merge_provenance():
 
 
 def main():
-    # get_common_arts()
+    get_common_arts()
     # merge_provenance()
-    push_nga_provenance()
+    # push_nga_provenance()
     push_getty_provenance()
 
 
