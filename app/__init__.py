@@ -65,10 +65,10 @@ def art(artid=None):
         art_object = art_collection.find_one({'_id':bson.ObjectId(oid=str(artid))})
         # Check if the object exists
         if art_object:
+            pprint(art_object)
             #Check if it is a NGA art
             if not art_object["linked"] == 'True' and art_object["source"] == 'nga':
                 artist = artist_collection.find_one({'name':art_object['artist']})
-
                 artist_id = artist['_id']
                 art_object['artist_id'] = artist_id
 
@@ -83,7 +83,10 @@ def art(artid=None):
                 art_object["image"] = "http://www.nga.gov/content/dam/ngaweb/placeholder-90x90.jpg"
 
             elif art_object["linked"] == 'True':
-                pass
+                artist = artist_collection.find_one({'url':art_object['artist_url']})
+                artist_id = artist['_id']
+                print artist_id
+                art_object['artist_id'] = artist_id
 
             return render_template('art.html', art=art_object)
         else:
@@ -95,6 +98,7 @@ def art(artid=None):
 @app.route('/artist/<artistid>')
 def artist(artistid=None):
     try:
+        print "artistid ", artistid
         artist_object = artist_collection.find_one({'_id':bson.ObjectId(oid=str(artistid))})
         if artist_object:
             sd = artist_object['short_description']
@@ -137,7 +141,9 @@ def artist(artistid=None):
                         artist_object['arts'] = arts
             return render_template('artist.html', artist=artist_object)
         else:
+            print "Result not found"
             return render_template('404.html')
     except bson.errors.InvalidId, e:
+        print "Invalid ID"
         return render_template('404.html')
     

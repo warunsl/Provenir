@@ -55,9 +55,17 @@
     {% include 'navbar.html' %}
     <div class="container" style="max-width:960px">
         <div style="position: relative" class="container top-container">
+            {% if art.source %}
             <div style=" position: absolute; right: 5px; top: 5px;">
                 <span class="label label-primary">{{ art.source }}</span>
             </div>
+            {% endif %}
+            {% if art.linked %}
+            <div style=" position: absolute; right: 5px; top: 5px;">
+                <span class="label label-primary">getty</span>
+                <span class="label label-primary">nga</span>
+            </div>
+            {% endif %}
             <div class="row">
                 <div class="col-md-4" style="text-align:center">
                     <img style="width:200px" class="img-rounded" src="{{ art.image }}">
