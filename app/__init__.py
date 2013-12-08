@@ -34,7 +34,7 @@ def index():
 def about():
     return render_template('about.html')
 
-    
+
 
 
 @app.route('/viz')
@@ -198,6 +198,24 @@ def search_artist():
         obj = {
             "value": record["obj"]["name"],
             "url": "/artist/"+str(record["obj"]["_id"])
+            }
+        result.append(obj)
+    resp = Response(response=dumps(result),
+                    status=200,
+                    mimetype="application/json")
+    return resp
+
+@app.route('/search/organization')
+def search_org():
+    query = request.args.get('query')
+    result = []
+    cursor = db.command("text", "organization" , 
+        search=query,
+        limit=5)
+    for record in cursor['results']:
+        obj = {
+            "value": record["obj"]["entity_label"],
+            "url": "/organization/"+str(record["obj"]["_id"])
             }
         result.append(obj)
     resp = Response(response=dumps(result),

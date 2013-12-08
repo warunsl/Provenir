@@ -68,13 +68,17 @@
         <script type="text/javascript" charset="utf-8">
         var autocompleted = null;
         $('#input').typeahead([{        
-            name: 'test',
+            name: 'art',
             remote: '/search/art?query=%QUERY',
             header: '<h4 class="league-name">Arts</h4>'
         },{        
-            name: 'test2',
+            name: 'artist',
             remote: '/search/artist?query=%QUERY',
             header: '<h4 class="league-name">Artists</h4>'
+        },{        
+            name: 'organizations',
+            remote: '/search/organization?query=%QUERY',
+            header: '<h4 class="league-name">Organizations</h4>'
         }]);
 
         $('#input').bind('typeahead:selected', function(obj, datum, name) {      
