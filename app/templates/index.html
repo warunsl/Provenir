@@ -69,12 +69,12 @@
         var autocompleted = null;
         $('#input').typeahead([{        
             name: 'test',
-            remote: '/static/test?q=%QUERY',
-            header: '<h4 class="league-name">Artists</h4>'
+            remote: '/search/art?query=%QUERY',
+            header: '<h4 class="league-name">Arts</h4>'
         },{        
             name: 'test2',
-            local: ['alpha','allpha2','alpha3','bravo','charlie','delta','epsilon','gamma','zulu'],
-            header: '<h4 class="league-name">Arts</h4>'
+            remote: '/search/artist?query=%QUERY',
+            header: '<h4 class="league-name">Artists</h4>'
         }]);
 
         $('#input').bind('typeahead:selected', function(obj, datum, name) {      
@@ -108,7 +108,7 @@
         });
 
         function goToURL(datum){
-            console.log("going to : "+datum.url);
+            window.location.href = datum.url;
         }
         
         </script>
