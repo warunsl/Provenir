@@ -38,18 +38,18 @@ def organization(orgid=None):
             nga_art_ids = org_object['nga-art-ids']
             int_nga_art_ids = [int(i_d) for i_d in nga_art_ids]
             int_nga_art_ids = list(set(int_nga_art_ids))
-            arts_cursor =  art_collection.find({ "nga-data.id": { "$in": int_nga_art_ids } })
+            arts_cursor =  art_collection.find({ "nga_data.id": { "$in": int_nga_art_ids } })
             # art_ids = [item['_id'] for item in arts_cursor]
             # org_object['art_ids'] = art_ids
 
             # Get the art objects
-            arts_cursor =  art_collection.find({ "nga-data.id": { "$in": int_nga_art_ids } })
+            arts_cursor =  art_collection.find({ "nga_data.id": { "$in": int_nga_art_ids } })
             arts = [item for item in arts_cursor]
             org_object['arts'] = arts
 
             # Turns out there are duplicates in our database. No time to fix the db.
-            # Removing duplicates based on nga-data.id here
-            d = {x['nga-data']['id']: x for x in arts}
+            # Removing duplicates based on nga_data.id here
+            d = {x['nga_data']['id']: x for x in arts}
             org_object['arts'] = list(d.values())
 
             return render_template('organization.html', org=org_object)
@@ -63,18 +63,28 @@ def organization(orgid=None):
 def art(artid=None):
     try:
         art_object = art_collection.find_one({'_id':bson.ObjectId(oid=str(artid))})
+        # Check if the object exists
         if art_object:
-            artist = artist_collection.find_one({'name':art_object['artist']})
+            #Check if it is a NGA art
+            if not art_object["linked"] == 'True' and art_object["source"] == 'nga':
+                artist = artist_collection.find_one({'name':art_object['artist']})
 
-            artist_id = artist['_id']
-            art_object['artist_id'] = artist_id
+                artist_id = artist['_id']
+                art_object['artist_id'] = artist_id
 
-            if len(art_object['organizations']) > 0:
-                orglist = []
-                for org in art_object['organizations']:
-                    record = org_collection.find_one({'entity_url':org})
-                    orglist.append((record['_id'], record['entity_label']))
-                art_object['organizationslist'] = orglist
+                if len(art_object['organizations']) > 0:
+                    orglist = []
+                    for org in art_object['organizations']:
+                        record = org_collection.find_one({'entity_url':org})
+                        orglist.append((record['_id'], record['entity_label']))
+                    art_object['organizationslist'] = orglist
+
+            elif not art_object["linked"] == 'True' and art_object["source"] == 'getty':
+                art_object["image"] = "http://www.nga.gov/content/dam/ngaweb/placeholder-90x90.jpg"
+
+            elif art_object["linked"] == 'True':
+                pass
+
             return render_template('art.html', art=art_object)
         else:
             return render_template('404.html')
@@ -93,18 +103,18 @@ def artist(artistid=None):
             fixed_movement = artist_object['movement'][len('http://dbpedia.org/resource/'):].replace('_', ' ')
             artist_object['movement'] = fixed_movement
             try:
-                artist_object['nga-data']
+                artist_object['nga_data']
             except KeyError:
                 return render_template('404.html')
             if artist_object['source'] == 'nga':
-                # first = artist_object['nga-data']['url'].split('.html')[0]
+                # first = artist_object['nga_data']['url'].split('.html')[0]
                 # nga_id = first[first.index('.') + 1:]
                 if artist_object['linked'] == 'False':
-                    artist_object['image'] = "http://www.nga.gov" + artist_object['nga-data']['imagepath']
+                    artist_object['image'] = "http://www.nga.gov" + artist_object['nga_data']['imagepath']
                 else:
                     artist_object['image'] = artist_object['image_url']
 
-                nga_artist_url = artist_object['nga-data']['url']
+                nga_artist_url = artist_object['nga_data']['url']
                 artist_to_art_record = artist_to_art_collection.find_one({'artistURL':nga_artist_url})
                 if artist_to_art_record:
                     art_ids = artist_to_art_record['arts']
@@ -114,7 +124,7 @@ def artist(artistid=None):
                     if len(art_ids) > 0:
                         artist_object['art_ids'] = art_ids
                         for art_id in art_ids:
-                            art_data_record = art_collection.find_one({'nga-data.id':art_id})
+                            art_data_record = art_collection.find_one({'nga_data.id':art_id})
                             if art_data_record:
                                 title = unicode(BeautifulSoup(art_data_record['title'], convertEntities=
                                    BeautifulSoup.HTML_ENTITIES))
