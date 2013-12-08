@@ -44,6 +44,7 @@
 
             .provenance-data{
                 margin-top:8px;
+                position: relative;
             }
 
             .provenance-record{
@@ -57,6 +58,13 @@
                 font-size:10px;
             }
 
+            .top-right{
+                position: absolute;
+                top:6px;
+                right:6px;
+                font-size:10px;
+            }
+
             .getty{
                 background-color:  #28B85B;
             }
@@ -66,6 +74,21 @@
             
         </style>
 
+        <script type="text/template" id="compare-row-template">
+            <div class="provenance-record row">
+                    <div class="col-md-5 provenance-data" style="text-align:right">
+                        <% if(obj.getty){ %><span class="label label-primary top-left getty">getty</span><% } %>
+                        <%=obj.getty%>
+                    </div>
+                    <div class="date col-md-2">
+                        <span class="startData"><%=obj.startDate%></span>
+                    </div>
+                    <div class="col-md-5 provenance-data">
+                        <% if(obj.nga){ %><span class="label label-primary top-right nga">nga</span><% } %>
+                        <%=obj.nga%>
+                    </div>
+            </div>
+        </script>
 
     </head>
 
@@ -81,8 +104,8 @@
             {% endif %}
             {% if art.linked %}
             <div style=" position: absolute; right: 5px; top: 5px;">
-                <span class="label label-primary">getty</span>
-                <span class="label label-primary">nga</span>
+                <span class="label label-primary getty">getty</span>
+                <span class="label label-primary nga">nga</span>
             </div>
             {% endif %}
             <div class="row">
@@ -113,11 +136,12 @@
         {% if art.provenance %}
         <h2> Provenance:</h2>
         <div class="provenance-container container" style="max-width:960px">
+
             {% for prov in art.provenance %}
                  <div class="provenance-record row">
                     <div class="date col-md-2">
                         <span class="label label-primary top-left {{prov.source}}">{{prov.source}}</span>
-                        {{ prov.startDate }}<!-- - {{ prov.startDate }}-->
+                        <span class="startData">{{ prov.startDate }}</span><!-- - {{ prov.startDate }}-->
                     </div>
                     <div class="col-md-10 provenance-data">
                         {{ prov.provenance }}
@@ -132,7 +156,10 @@
         
         </div>
         {% endif %}
-        <div class="container" style="margin-bottom:30px">
+
+        <br><br><br><br><br><br>
+        <div class="provenance-container container hide" id="compare" style="max-width:960px">
+                 
         </div>
     </div>
 
@@ -140,8 +167,40 @@
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="{{ url_for('static', filename='underscore-min.js') }}"></script>
         <script src="{{ url_for('static', filename='bootstrap.js') }}"></script>
         <script src="{{ url_for('static', filename='holder.js') }}"></script>
         <script src="{{ url_for('static', filename='application.js') }}"></script>
+        <script type="text/javascript">
+        var arr =[], obj;
+        $('.provenance-record').each(function(){
+            var x = $(this),
+            startDate = x.find('.startData').html().trim(),
+            label = x.find('.label').html().trim(),
+            data = x.find('.provenance-data').html().trim();
+          
+            if(obj==undefined){
+                obj = {};
+                obj.startDate = startDate;
+                obj[label] = data;
+            }
+            else{
+                if(obj.startDate===startDate){
+                    obj[label] = data;
+                    arr.push(obj);
+                    obj = null;
+                }else{
+                    arr.push(obj);
+                    obj = {};
+                    obj.startDate = startDate;
+                    obj[label] = data;
+                }
+            }
+        });
+        template = _.template($('#compare-row-template').html());
+        arr.forEach(function(item){
+            $('#compare').append(template({obj:item}));
+        });
+        </script>
     </body>
 </html>
