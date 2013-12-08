@@ -18,6 +18,7 @@ def insert_getty_arts():
     getty_records_cursor = prov_collection.find()
     for record in getty_records_cursor:
         if str(record["picId"]) not in linked_picture_ids:
+            print "Here"
             art_object = {}
             art_object["title"] = record["title"]
             art_object["source"] = "getty"
@@ -30,9 +31,10 @@ def insert_getty_arts():
 
             art_collection.insert(art_object)
         else:
-            print str(record["picId"]), 
+            print "Not there"
+            provenance = []
             res = art_collection.find_one({'getty_data.picture_id':str(record["picId"])})
-            art_collection.update({"_id":res["_id"]}, {"$set" : {"provenance":record["provenanceArr"]}})
+            art_collection.update({"_id":res["_id"]}, {"$set" : {"provenance": provenance}})
 
 
 def insert_linked_arts():
@@ -66,7 +68,6 @@ def insert_linked_arts():
 def main():
     art_collection.remove({'linked':'True'})
     insert_linked_arts()
-    print linked_picture_ids
     art_collection.remove({'source':'getty'})
     insert_getty_arts()
 
