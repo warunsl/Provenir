@@ -15,12 +15,12 @@ db = connection.provenir
 artist_collection = db.artist
 art_collection = db.art
 org_collection = db.organization
+artist_to_art_collection = db.artisttoart
 
 # myDb = connection['548db']
 # art_collection_test = myDb.artdata
 
 gldb = connection.gladondb
-artist_to_art_collection = gldb.artisttoart
 art_data_collection = gldb.artdata
 
 app = Flask(__name__)
@@ -78,7 +78,7 @@ def art(artid=None):
         art_object = art_collection.find_one({'_id':bson.ObjectId(oid=str(artid))})
         # Check if the object exists
         if art_object:
-            pprint(art_object)
+            # pprint(art_object)
             #Check if it is a NGA art
             try:
                 if art_object["linked"] == 'True':
@@ -115,7 +115,7 @@ def artist(artistid=None):
         print "artistid ", artistid
         artist_object = artist_collection.find_one({'_id':bson.ObjectId(oid=str(artistid))})
         if artist_object:
-            pprint(artist_object)
+            # pprint(artist_object)
             sd = artist_object['short_description']
             ld = artist_object['long_description']
             artist_object['description'] = sd if len(sd) > len(ld) else ld
@@ -125,10 +125,7 @@ def artist(artistid=None):
                 artist_object['nga_data']
             except KeyError:
                 pass
-                # return render_template('404.html')
             if artist_object['source'] == 'nga':
-                # first = artist_object['nga_data']['url'].split('.html')[0]
-                # nga_id = first[first.index('.') + 1:]
                 try:
                     artist_object['linked']
                     artist_object['image'] = artist_object['image_url']
@@ -144,11 +141,21 @@ def artist(artistid=None):
                     art_ids = artist_to_art_record['arts']
                     art_ids = set(art_ids)
                     art_ids = list(art_ids)
+                    print art_ids
                     arts = []
                     if len(art_ids) > 0:
                         artist_object['art_ids'] = art_ids
                         for art_id in art_ids:
-                            art_data_record = art_collection.find_one({'nga_data.id':art_id})
+                            # Get all linked arts
+                            found = False
+                            linked_arts_cursor = art_collection.find({'linked':'True'})
+                            for record in linked_arts_cursor:
+                                if art_id == int(record['nga_data']['id']):
+                                    art_data_record = record
+                                    found = True
+                            if not found:
+                                art_data_record = art_collection.find_one({'nga_data.id':art_id})
+
                             if art_data_record:
                                 title = unicode(BeautifulSoup(art_data_record['title'], convertEntities=
                                    BeautifulSoup.HTML_ENTITIES))
