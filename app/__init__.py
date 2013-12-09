@@ -31,7 +31,7 @@ def set_up_mongo():
     global artist_to_art_collection
     parameters = []
 
-    with open('.config', 'rb') as configfile:
+    with open('config', 'rb') as configfile:
         for line in configfile:
             parameters.append(line.strip())
     configfile.close()
