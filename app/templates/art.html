@@ -98,12 +98,12 @@
     <div class="container" style="max-width:960px">
         <div style="position: relative" class="container top-container">
             {% if art.source %}
-            <div style=" position: absolute; right: 5px; top: 5px;">
+            <div id="sources" style=" position: absolute; right: 5px; top: 5px;">
                 <span class="label label-primary">{{ art.source }}</span>
             </div>
             {% endif %}
             {% if art.linked %}
-            <div style=" position: absolute; right: 5px; top: 5px;">
+            <div id="sources" style=" position: absolute; right: 5px; top: 5px;">
                 <span class="label label-primary getty">getty</span>
                 <span class="label label-primary nga">nga</span>
             </div>
@@ -135,7 +135,7 @@
         <br>
         {% if art.provenance %}
         <h2> Provenance:</h2>
-        <div class="provenance-container container" style="max-width:960px">
+        <div id="normal-view" class="provenance-container container" style="max-width:960px">
 
             {% for prov in art.provenance %}
                  <div class="provenance-record row">
@@ -157,7 +157,6 @@
         </div>
         {% endif %}
 
-        <br><br><br><br><br><br>
         <div class="provenance-container container hide" id="compare" style="max-width:960px">
                  
         </div>
@@ -201,6 +200,7 @@
         arr.forEach(function(item){
             $('#compare').append(template({obj:item}));
         });
+        if($('#sources > span').length==2){$('#normal-view').hide();$('#compare').removeClass('hide');}
         </script>
     </body>
 </html>
