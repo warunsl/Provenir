@@ -2,6 +2,7 @@
 ####################
 env
 *.csv
+.config
 
 # Python specific #
 ###################
