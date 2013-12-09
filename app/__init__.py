@@ -10,18 +10,41 @@ from flask import request
 from flask import Response
 from bson.json_util import dumps
 
-connection = MongoClient()
-db = connection.provenir
-artist_collection = db.artist
-art_collection = db.art
-org_collection = db.organization
-artist_to_art_collection = db.artisttoart
 
-# myDb = connection['548db']
-# art_collection_test = myDb.artdata
+mongo_url = None 
+connection = None
+db = None
+artist_collection = None
+art_collection = None
+org_collection = None
+artist_to_art_collection = None
 
-gldb = connection.gladondb
-art_data_collection = gldb.artdata
+
+def set_up_mongo():
+    print "Setting up mongo.."
+    global mongo_url 
+    global connection
+    global db
+    global artist_collection 
+    global art_collection 
+    global org_collection 
+    global artist_to_art_collection
+    parameters = []
+
+    with open('.config', 'rb') as configfile:
+        for line in configfile:
+            parameters.append(line.strip())
+    configfile.close()
+    user, password = parameters
+    mongo_url = "mongodb://{0}:{1}@linus.mongohq.com:10024/app20178630".format(user, password)
+    connection = MongoClient(mongo_url)
+    print connection
+    db = connection.app20178630
+    artist_collection = db.artist
+    art_collection = db.art
+    org_collection = db.organization
+    artist_to_art_collection = db.artisttoart
+
 
 app = Flask(__name__)
 
@@ -33,8 +56,6 @@ def index():
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-
 
 
 @app.route('/viz')
